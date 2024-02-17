@@ -1,5 +1,5 @@
 ﻿// Default parameters
-var Default_Refresh_Tasks = 1000;
+var Default_Refresh_Tasks = 500;
 // IPs
 const IPs = [];
 // Object to store timers
@@ -12,8 +12,10 @@ var Tabs = {};
 var TabsBody = {};
 // Object to commands
 var Commands = {};
-
-
+// Object to test List
+var TestList = {};
+// Object to test Current
+var TestCurrent = {};
 
 
 
@@ -69,6 +71,109 @@ function addNew(ipAddress = null) {
     showPage(ipAddress);
 }
 
+// Function On Click Stop
+function Control_OnClick_Stop(ipAddress = null) {
+    if (Commands[ipAddress] == 'Stop') {
+        return;
+    }
+    Execute(ipAddress, 'Stop', '').then(function (response) {
+        Commands[ipAddress] = 'Stop';
+    });
+}
+
+// Function On Click Play
+function Control_OnClick_Play(ipAddress = null) {
+    if (Commands[ipAddress] == 'Play') {
+        return;
+    }
+    Execute(ipAddress, 'Play', '').then(function (response) {
+        Commands[ipAddress] = 'Play';
+    });
+}
+
+// Function On Click Pause
+function Control_OnClick_Pause(ipAddress = null) {
+    if (Commands[ipAddress] == 'Pause') {
+        return;
+    }
+    Execute(ipAddress, 'Pause', '').then(function (response) {
+        Commands[ipAddress] = 'Pause';
+    });
+}
+
+// Function On Click Next
+function Control_OnClick_Next(ipAddress = null) {
+    if (Commands[ipAddress] == 'Next') {
+        return;
+    }
+    Execute(ipAddress, 'Next', '').then(function (response) {
+        Commands[ipAddress] = 'Next';
+    });
+}
+
+// Function On Click Repete
+function Control_OnClick_Repete(ipAddress = null) {
+    if (Commands[ipAddress] == 'Repete') {
+        return;
+    }
+    Execute(ipAddress, 'Repete', '').then(function (response) {
+        Commands[ipAddress] = 'Repete';
+    });
+}
+
+// Function Add control Objects
+function Add_Control_To(ipAddress, obj) {
+    // Stop icon
+    var stopIcon = document.createElement('a');
+    stopIcon.href = '#';
+    stopIcon.style.color = '#401040';
+    stopIcon.style.padding = '10px';
+    stopIcon.setAttribute('title', 'Stop');
+    stopIcon.classList.add('fas', 'fa-stop');
+    obj.appendChild(stopIcon);
+    stopIcon.addEventListener('click', function () { Control_OnClick_Stop(ipAddress); });
+
+    // Play icon
+    var playIcon = document.createElement('a');
+    playIcon.href = '#';
+    playIcon.style.color = '#401040';
+    playIcon.style.padding = '10px';
+    playIcon.setAttribute('title', 'Play');
+    playIcon.classList.add('fas', 'fa-play');
+    obj.appendChild(playIcon);
+    playIcon.addEventListener('click', function () { Control_OnClick_Play(ipAddress); });
+
+    // Pause icon
+    var PauseIcon = document.createElement('a');
+    PauseIcon.href = '#';
+    PauseIcon.style.color = '#401040';
+    PauseIcon.style.padding = '10px';
+    PauseIcon.setAttribute('title', 'Pause');
+    PauseIcon.classList.add('fas', 'fa-pause');
+    obj.appendChild(PauseIcon);
+    PauseIcon.addEventListener('click', function () { Control_OnClick_Pause(ipAddress); });
+
+    // Next icon
+    var nextIcon = document.createElement('a');
+    nextIcon.href = '#';
+    nextIcon.style.color = '#401040';
+    nextIcon.style.padding = '10px';
+    nextIcon.setAttribute('title', 'Next');
+    nextIcon.classList.add('fas', 'fa-forward');
+    obj.appendChild(nextIcon);
+    nextIcon.addEventListener('click', function () { Control_OnClick_Next(ipAddress); });
+
+    // Repete icon
+    var repeteIcon = document.createElement('a');
+    repeteIcon.href = '#';
+    repeteIcon.style.color = '#401040';
+    repeteIcon.style.padding = '10px';
+    repeteIcon.setAttribute('title', 'Repete');
+    repeteIcon.classList.add('fas', 'fa-redo');
+    obj.appendChild(repeteIcon);
+    repeteIcon.addEventListener('click', function () { Control_OnClick_Repete(ipAddress); });
+}
+
 // Function to add a new to Tab
 function Add_To_Tab(ipAddress = null) {
     // Create a new list item for the tab
@@ -113,25 +218,8 @@ function Add_To_Tab(ipAddress = null) {
 
     // List of divs below the IP address
     var listContainer = document.createElement('div');
+    listContainer.id = 'list';
     listContainer.classList.add('list-container');
-
-    // Individual divs in the list
-    for (var i = 1; i <= 3; i++) {
-        var listItem = document.createElement('div');
-        listItem.id = 'item' + i;
-        listItem.classList.add('list-item');
-        listItem.classList.add('lightblue');
-
-        var itemName = document.createElement('span');
-        itemName.textContent = 'Item ' + i + ' : ';
-        listItem.appendChild(itemName);
-
-        var itemState = document.createElement('span');
-        itemState.textContent = 'State';
-        listItem.appendChild(itemState);
-
-        listContainer.appendChild(listItem);
-    }
 
     // Append the list container to the progress container
     TabsBody[ipAddress].appendChild(listContainer);
@@ -163,6 +251,7 @@ function Add_To_Dashboard(ipAddress = null) {
     // Create a progress bar for the new tab
     ProgressOfDashboard[ipAddress] = document.createElement('div');
     ProgressOfDashboard[ipAddress].classList.add('progress-container');
+    ProgressOfDashboard[ipAddress].classList.add('box');
 
     // IP address (set as the title of the progress container)
     ProgressOfDashboard[ipAddress].setAttribute('title', 'IP: ' + ipAddress);
@@ -172,6 +261,9 @@ function Add_To_Dashboard(ipAddress = null) {
     ipWrapper.classList.add('ip-wrapper');
     ipWrapper.textContent = 'Device IP : ' + ipAddress;
     ProgressOfDashboard[ipAddress].appendChild(ipWrapper);
+    ipWrapper.addEventListener('click', function (event) {
+        showPage(ipAddress); // Show the page corresponding to the IP address
+    });
 
     // State div
     var stateElement = document.createElement('div');
@@ -189,65 +281,7 @@ function Add_To_Dashboard(ipAddress = null) {
 
     Commands[ipAddress] = 'Stop';
 
-    // Stop icon
-    var stopIcon = document.createElement('i');
-    stopIcon.style.padding = '10px';
-    stopIcon.setAttribute('title', 'Stop');
-    stopIcon.classList.add('fas', 'fa-stop');
-    ProgressOfDashboard[ipAddress].appendChild(stopIcon);
-    stopIcon.addEventListener('click', function () {
-        if (Execute(ipAddress, 'Stop', '').Online) {
-            Commands[ipAddress] = 'Stop';
-        }
-    });
-
-    // Play icon
-    var playIcon = document.createElement('i');
-    playIcon.style.padding = '10px';
-    playIcon.setAttribute('title', 'Play');
-    playIcon.classList.add('fas', 'fa-play');
-    ProgressOfDashboard[ipAddress].appendChild(playIcon);
-    playIcon.addEventListener('click', function () {
-        if (Execute(ipAddress, 'Play', '').Online) {
-            Commands[ipAddress] = 'Play';
-        }
-    });
-
-    // Pause icon
-    var playIcon = document.createElement('i');
-    playIcon.style.padding = '10px';
-    playIcon.setAttribute('title', 'Pause');
-    playIcon.classList.add('fas', 'fa-pause');
-    ProgressOfDashboard[ipAddress].appendChild(playIcon);
-    playIcon.addEventListener('click', function () {
-        if (Execute(ipAddress, 'Pause', '').Online) {
-            Commands[ipAddress] = 'Pause';
-        }
-    });
-
-    // Next icon
-    var nextIcon = document.createElement('i');
-    nextIcon.style.padding = '10px';
-    nextIcon.setAttribute('title', 'Next');
-    nextIcon.classList.add('fas', 'fa-forward');
-    ProgressOfDashboard[ipAddress].appendChild(nextIcon);
-    nextIcon.addEventListener('click', function () {
-        if (Execute(ipAddress, 'Next', '').Online) {
-            Commands[ipAddress] = 'Next';
-        }
-    });
-
-    // Repete icon
-    var repeteIcon = document.createElement('i');
-    repeteIcon.style.padding = '10px';
-    repeteIcon.setAttribute('title', 'Repete');
-    repeteIcon.classList.add('fas', 'fa-redo');
-    ProgressOfDashboard[ipAddress].appendChild(repeteIcon);
-    repeteIcon.addEventListener('click', function () {
-        if (Execute(ipAddress, 'Repete', '').Online) {
-            Commands[ipAddress] = 'Repete';
-        }
-    });
+    Add_Control_To(ipAddress, ProgressOfDashboard[ipAddress]);
 
     // Progress bar
     var progressBarRound = document.createElement('div');
@@ -278,7 +312,7 @@ function Remove_of_Dashboard(ipAddress = null) {
 var t = 0;
 function Add_To_Timers(ipAddress = null) {
     // Add timer
-    Timers[ipAddress] = setInterval(() => {
+    Timers[ipAddress] = setTimeout(() => {
         var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
         var dashboard_task = ProgressOfDashboard[ipAddress].querySelector('#task');
         var dashboard_progress = ProgressOfDashboard[ipAddress].querySelector('#progress');
@@ -286,9 +320,36 @@ function Add_To_Timers(ipAddress = null) {
         var tabs_status = Tabs[ipAddress].querySelector('#status');
         var tabs_state = TabsBody[ipAddress].querySelector('#state');
         var tabs_task = TabsBody[ipAddress].querySelector('#task');
+        var tabs_list = TabsBody[ipAddress].querySelector('#list');
 
         Execute(ipAddress, 'Link', '').then(function (response) {
-            if (response.Online) {
+            if (response.Online) {document.getElementsByTagName("p")
+                if (tabs_list.innerHTML == "") {
+                    Execute(ipAddress, 'List', '').then(function (response) {
+                        Add_Control_To(ipAddress, TabsBody[ipAddress]);
+                        TestList[ipAddress] = response.Value.split(',');
+                        for (var i = 0; i < TestList[ipAddress].length; i++) {
+                            var listItem = document.createElement('div');
+                            listItem.id = TestList[ipAddress][i];
+                            listItem.classList.add('list-item');
+                            listItem.classList.add('lightblue');
+
+                            var checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            listItem.appendChild(checkbox);
+
+                            var itemName = document.createElement('span');
+                            itemName.textContent = " Item " + (i+1) + " : ";
+                            listItem.appendChild(itemName);
+
+                            var itemState = document.createElement('span');
+                            itemState.textContent = TestList[ipAddress][i];
+                            listItem.appendChild(itemState);
+
+                            tabs_list.appendChild(listItem);
+                        }
+                    });
+                }
                 if (Commands[ipAddress] == 'Stop' || Commands[ipAddress] == 'Pause') {
                     if (!tabs_status.classList.contains('lightblue')) {
                         tabs_status.classList.add('lightblue');
@@ -298,6 +359,7 @@ function Add_To_Timers(ipAddress = null) {
                 }
             }
             else {
+                tabs_list.innerHTML = "";
                 if (tabs_status.classList.contains('lightblue')) {
                     tabs_status.classList.remove('lightblue');
                 }
@@ -320,6 +382,7 @@ function Add_To_Timers(ipAddress = null) {
                     if (!dashboard_progress.classList.contains('lightgray')) {
                         dashboard_progress.classList.add('lightgray');
                     }
+                    TestCurrent[ipAddress] = 0;
                     dashboard_progress.style.width = '0%';
                     dashboard_progress.innerHTML = '';
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Stoped';
@@ -338,16 +401,30 @@ function Add_To_Timers(ipAddress = null) {
                     if (!dashboard_progress.classList.contains('lightblue')) {
                         dashboard_progress.classList.add('lightblue');
                     }
-                    dashboard_progress.style.width = (t++) + '%';
-                    dashboard_progress.innerHTML = t + '%';
+                    dashboard_progress.style.width = ((TestCurrent[ipAddress] / TestList[ipAddress].length)*100) + '%';
+                    dashboard_progress.innerHTML = ((TestCurrent[ipAddress] / TestList[ipAddress].length) * 100) + '%';
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Playing';
-                    if (t >= 100) {
+                    if (TestCurrent[ipAddress] >= TestList[ipAddress].length) {
                         dashboard_progress.style.width = '100%';
                         dashboard_progress.innerHTML = '100%';
                         dashboard_progress.classList.remove('lightblue');
                         dashboard_progress.classList.add('lightgreen');
                         tabs_task.textContent = dashboard_task.textContent = 'Task : End';
                         Commands[ipAddress] = 'Pause';
+                    }
+                    else {
+                        Execute(ipAddress, TestList[ipAddress][TestCurrent[ipAddress]], '').then(function (response) {
+                            if (true) {
+                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].style.backgroundColor = 'green';
+                            }
+                            else {
+                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].style.backgroundColor = 'red';
+                            }
+                            //alert(response.Value);
+                            //if (response.Value == "Passed") {
+                                TestCurrent[ipAddress]++;                            
+                            //}
+                        });
                     }
                     tabs_status.classList.toggle('lightblue');
                     break;
@@ -365,9 +442,14 @@ function Add_To_Timers(ipAddress = null) {
                     break;
                 }
             }        
+
+            Add_To_Timers(ipAddress);
+        }).catch(function (error) {
+            tabs_list.innerHTML = "";
+            Add_To_Timers(ipAddress);
         });
     }, Default_Refresh_Tasks);
-    console.log('Add_To_Timers(' + ipAddress + ')');
+    //console.log('Add_To_Timers(' + ipAddress + ')');
 }
 
 // Function to remove of Timers
