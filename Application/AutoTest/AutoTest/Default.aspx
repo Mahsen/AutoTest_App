@@ -51,7 +51,7 @@
     <p>This is the Settings page content.</p>
 </div>
 
-<script type="text/javascript" src="Script/main.js"></script>
+<script type="text/javascript" src="Script/main.js?t=1"></script>
 
 <script type="text/javascript">
 

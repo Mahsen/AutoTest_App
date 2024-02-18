@@ -216,6 +216,8 @@ function Add_To_Tab(ipAddress = null) {
     taskElement.textContent = 'Task : IDLE';
     TabsBody[ipAddress].appendChild(taskElement);
 
+    Add_Control_To(ipAddress, TabsBody[ipAddress]);
+
     // List of divs below the IP address
     var listContainer = document.createElement('div');
     listContainer.id = 'list';
@@ -325,8 +327,7 @@ function Add_To_Timers(ipAddress = null) {
         Execute(ipAddress, 'Link', '').then(function (response) {
             if (response.Online) {document.getElementsByTagName("p")
                 if (tabs_list.innerHTML == "") {
-                    Execute(ipAddress, 'List', '').then(function (response) {
-                        Add_Control_To(ipAddress, TabsBody[ipAddress]);
+                    Execute(ipAddress, 'List', '').then(function (response) {                        
                         TestList[ipAddress] = response.Value.split(',');
                         for (var i = 0; i < TestList[ipAddress].length; i++) {
                             var listItem = document.createElement('div');
