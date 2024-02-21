@@ -1,5 +1,5 @@
 ﻿// Default parameters
-var Default_Refresh_Tasks = 500;
+var Default_Refresh_Tasks = 1000;
 // IPs
 const IPs = [];
 // Object to store timers
@@ -77,6 +77,8 @@ function Control_OnClick_Stop(ipAddress = null) {
         return;
     }
     Execute(ipAddress, 'Stop', '').then(function (response) {
+        var tabs_list = TabsBody[ipAddress].querySelector('#list');
+        tabs_list.innerHTML = "";
         Commands[ipAddress] = 'Stop';
     });
 }
@@ -327,27 +329,29 @@ function Add_To_Timers(ipAddress = null) {
         Execute(ipAddress, 'Link', '').then(function (response) {
             if (response.Online) {document.getElementsByTagName("p")
                 if (tabs_list.innerHTML == "") {
-                    Execute(ipAddress, 'List', '').then(function (response) {                        
-                        TestList[ipAddress] = response.Value.split(',');
-                        for (var i = 0; i < TestList[ipAddress].length; i++) {
-                            var listItem = document.createElement('div');
-                            listItem.id = TestList[ipAddress][i];
-                            listItem.classList.add('list-item');
-                            listItem.classList.add('lightblue');
+                    Execute(ipAddress, 'List', '').then(function (response) { 
+                        if (tabs_list.innerHTML == "") {
+                            TestList[ipAddress] = response.Value.split(',');
+                            for (var i = 0; i < TestList[ipAddress].length; i++) {
+                                var listItem = document.createElement('div');
+                                listItem.id = TestList[ipAddress][i];
+                                listItem.classList.add('list-item');
+                                listItem.classList.add('lightblue');
 
-                            var checkbox = document.createElement('input');
-                            checkbox.type = 'checkbox';
-                            listItem.appendChild(checkbox);
+                                var checkbox = document.createElement('input');
+                                checkbox.type = 'checkbox';
+                                listItem.appendChild(checkbox);
 
-                            var itemName = document.createElement('span');
-                            itemName.textContent = " Item " + (i+1) + " : ";
-                            listItem.appendChild(itemName);
+                                var itemName = document.createElement('span');
+                                itemName.textContent = " Item " + (i + 1) + " : ";
+                                listItem.appendChild(itemName);
 
-                            var itemState = document.createElement('span');
-                            itemState.textContent = TestList[ipAddress][i];
-                            listItem.appendChild(itemState);
+                                var itemState = document.createElement('span');
+                                itemState.textContent = TestList[ipAddress][i];
+                                listItem.appendChild(itemState);
 
-                            tabs_list.appendChild(listItem);
+                                tabs_list.appendChild(listItem);
+                            }
                         }
                     });
                 }
@@ -403,7 +407,7 @@ function Add_To_Timers(ipAddress = null) {
                         dashboard_progress.classList.add('lightblue');
                     }
                     dashboard_progress.style.width = ((TestCurrent[ipAddress] / TestList[ipAddress].length)*100) + '%';
-                    dashboard_progress.innerHTML = ((TestCurrent[ipAddress] / TestList[ipAddress].length) * 100) + '%';
+                    dashboard_progress.innerHTML = Math.round((TestCurrent[ipAddress] / TestList[ipAddress].length) * 100) + '%';
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Playing';
                     if (TestCurrent[ipAddress] >= TestList[ipAddress].length) {
                         dashboard_progress.style.width = '100%';
@@ -415,15 +419,18 @@ function Add_To_Timers(ipAddress = null) {
                     }
                     else {
                         Execute(ipAddress, TestList[ipAddress][TestCurrent[ipAddress]], '').then(function (response) {
-                            if (true) {
-                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].style.backgroundColor = 'green';
+                            if ((response.Value == "[ERR:0]") || (response.Value==null)) {
+                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');                                
                             }
                             else {
-                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].style.backgroundColor = 'red';
+                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].innerHTML += response.Value;
+                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
+                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightgreen');
+                                TestCurrent[ipAddress]++; 
                             }
                             //alert(response.Value);
                             //if (response.Value == "Passed") {
-                                TestCurrent[ipAddress]++;                            
+                            //    TestCurrent[ipAddress]++;                            
                             //}
                         });
                     }

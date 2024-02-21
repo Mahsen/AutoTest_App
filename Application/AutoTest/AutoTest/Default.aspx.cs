@@ -48,7 +48,7 @@ namespace AutoTest
                     // Perform operations with the TcpClient
                     NetworkStream stream = client.GetStream();
 
-                    byte[] messageBytes = Encoding.ASCII.GetBytes("<" + inputdata.Command + ">" + inputdata.Value+ "</" + inputdata.Command + ">\r\n");
+                    byte[] messageBytes = Encoding.ASCII.GetBytes("<AUTOTEST:" + inputdata.Command + ">" + inputdata.Value+ "</AUTOTEST>\r\n");
                     stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
 
                     messageBytes = new byte[512];
