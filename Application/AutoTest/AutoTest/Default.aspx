@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=2">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=12"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -17,6 +17,24 @@
         <li class="settings-icon"><a href="#" onclick="toggleSettings()"><i class="fas fa-cog"></i></a></li>
     </ul>
 </nav>
+
+<!-- Panel on the right side of the page for displaying serials -->
+<div id="serial-panel">
+    <div id="toggle-panel-button" class="toggle-panel-button">
+        <i id="toggle-icon" class="fas fa-chevron-left"></i>  
+        <span class="serial-text">Select your  serial of list</span>
+    </div> <!-- Icon to toggle panel visibility -->    
+    <h2>Serials</h2>
+    <ul id="serial-list">
+        <%
+            GetSerials().ForEach(serial =>
+            {
+                Response.Write("<li onClick='selectSerial(this.innerHTML);'>" + serial.ToString() + "</li>");
+            });
+        %>
+    </ul>
+</div>
+
 
 <!-- New menu with multi-tabs -->
 <nav class="bottom-menu">
@@ -31,7 +49,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h2>Enter IP Address</h2>
-    <input type="text" id="ipInput" placeholder="Enter IP Address...">
+    <input type="text" id="ipInput" placeholder="Enter IP Address..."/>
     <span id="ipError" style="color: red; display: none;">Invalid IP Address</span>
     <button onclick="addNew()">Add</button>
   </div>
@@ -51,7 +69,7 @@
     <p>This is the Settings page content.</p>
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=2"></script>
+<script type="text/javascript" src="Script/main.js?t=8"></script>
 
 <script type="text/javascript">
 
@@ -65,10 +83,10 @@
 	//alert(Execute('192.168.70.220', 'Link', '').Online);
 
     addNew("192.168.70.220");
-    //addNew("11.11.11.11");
-    //addNew("22.22.22.22");
-    //addNew("33.33.33.33");
-    //addNew("44.44.44.44");
+    addNew("11.11.11.11");
+    addNew("22.22.22.22");
+    addNew("33.33.33.33");
+    addNew("44.44.44.44");
 
 </script>
 

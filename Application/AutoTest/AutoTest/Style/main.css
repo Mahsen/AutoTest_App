@@ -2,6 +2,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
+    margin-right: 20px;
     padding: 0;
     background-color: #f0f0f0;
 }
@@ -264,4 +265,71 @@ h1 {
     background-color: #f0f0f0;
     padding: 20px;
     box-sizing: border-box;
+}
+
+/* CSS for the panel on the right side */
+#serial-panel {
+    position: fixed;
+    top: 0;
+    right: -300px; /* Initially position off-screen */
+    width: 300px; /* Adjust width as needed */
+    height: 100%;
+    background-color: #fff;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+    transition: right 0.3s ease; /* Add smooth transition */
+}
+
+#serial-panel.visible {
+    right: 0; /* Bring the panel into view */
+}
+
+#serial-panel h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* CSS for the list of serials */
+#serial-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-left: 30px;
+}
+
+#serial-list li {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc; /* Add separators between serials */
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+
+#serial-list li:last-child {
+    border-bottom: none; /* Remove border from last serial */
+}
+
+#serial-list li span {
+    font-weight: bold;
+}
+
+#serial-list li p {
+    margin: 5px 0;
+}
+
+.toggle-panel-button {
+    display: flex;
+    flex-direction: column; /* Display items in a column */
+    align-items: flex-start; /* Center items horizontally */
+    cursor: pointer;
+    position: fixed;
+}
+
+.serial-text {
+    margin-top: 5px; /* Adjust spacing as needed */
+    margin-left: -5px; /* Adjust spacing as needed */
+    writing-mode: vertical-lr; /* Rotate text vertically */
+    text-orientation: mixed; /* Ensure text orientation is mixed */
 }

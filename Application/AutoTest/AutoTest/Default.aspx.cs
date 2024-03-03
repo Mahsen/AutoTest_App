@@ -1,7 +1,7 @@
-﻿using AutoTest.Service;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Web;
@@ -13,6 +13,7 @@ namespace AutoTest
 {
     public partial class Default : System.Web.UI.Page
     {
+        AutoTestDataContext DataContext;
         public class StructData
         {
             public string IP { get; set; }
@@ -120,8 +121,17 @@ namespace AutoTest
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Service1Client client = new Service1Client();
-            //string name = client.Execute("Aloo");
+            DataContext = new AutoTestDataContext();
+        }
+
+        public List<String> GetSerials()
+        {
+            List<String> Serials = new List<String>();
+            DataContext.Devices.ToList().ForEach(device =>
+            {
+                Serials.Add(device.Serial.ToString());
+            });
+            return Serials;
         }
     }
 }

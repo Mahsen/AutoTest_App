@@ -16,8 +16,12 @@ var Commands = {};
 var TestList = {};
 // Object to test Current
 var TestCurrent = {};
-
-
+// Object to Serials
+var Serials = {};
+// Object to Onlines
+var Onlines = {};
+// IP Focus
+var FocusIP = "";
 
 
 // Function to open the modal
@@ -88,6 +92,14 @@ function Control_OnClick_Play(ipAddress = null) {
     if (Commands[ipAddress] == 'Play') {
         return;
     }
+    else if (!Onlines[ipAddress]) {
+        alert('The device is offline !');
+        return;
+    }
+    else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+        alert('Please select serial of list serials on right side !');
+        return;
+    }    
     Execute(ipAddress, 'Play', '').then(function (response) {
         Commands[ipAddress] = 'Play';
     });
@@ -218,6 +230,14 @@ function Add_To_Tab(ipAddress = null) {
     taskElement.textContent = 'Task : IDLE';
     TabsBody[ipAddress].appendChild(taskElement);
 
+    // Serial div
+    var SerialElement = document.createElement('div');
+    SerialElement.id = 'serial';
+    SerialElement.style.paddingBottom = '10px';
+    SerialElement.textContent = 'Serial : Not.Select';
+    TabsBody[ipAddress].appendChild(SerialElement);
+    Serials[ipAddress] = 'Not.Select';
+
     Add_Control_To(ipAddress, TabsBody[ipAddress]);
 
     // List of divs below the IP address
@@ -270,6 +290,7 @@ function Add_To_Dashboard(ipAddress = null) {
     });
 
     // State div
+    Onlines[ipAddress] = false;
     var stateElement = document.createElement('div');
     stateElement.id = 'state';
     stateElement.style.paddingTop = '10px';
@@ -282,6 +303,13 @@ function Add_To_Dashboard(ipAddress = null) {
     taskElement.style.paddingBottom = '10px';
     taskElement.textContent = 'Task : Stop';
     ProgressOfDashboard[ipAddress].appendChild(taskElement);
+
+    // Serial div
+    var SerialElement = document.createElement('div');
+    SerialElement.id = 'serial';
+    SerialElement.style.paddingBottom = '10px';
+    SerialElement.textContent = 'Serial : Not.Select';
+    ProgressOfDashboard[ipAddress].appendChild(SerialElement);
 
     Commands[ipAddress] = 'Stop';
 
@@ -320,11 +348,20 @@ function Add_To_Timers(ipAddress = null) {
         var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
         var dashboard_task = ProgressOfDashboard[ipAddress].querySelector('#task');
         var dashboard_progress = ProgressOfDashboard[ipAddress].querySelector('#progress');
+        var dashboard_serial = ProgressOfDashboard[ipAddress].querySelector('#serial');
 
         var tabs_status = Tabs[ipAddress].querySelector('#status');
         var tabs_state = TabsBody[ipAddress].querySelector('#state');
         var tabs_task = TabsBody[ipAddress].querySelector('#task');
+        var tabs_serial = TabsBody[ipAddress].querySelector('#serial');
         var tabs_list = TabsBody[ipAddress].querySelector('#list');
+
+        if (Serials[ipAddress].indexOf('Not.Select') == -1) {
+            dashboard_serial.style.color = tabs_serial.style.color = "green";
+        }
+        else {
+            dashboard_serial.style.color = tabs_serial.style.color = "red";
+        }
 
         Execute(ipAddress, 'Link', '').then(function (response) {
             if (response.Online) {document.getElementsByTagName("p")
@@ -359,6 +396,7 @@ function Add_To_Timers(ipAddress = null) {
                     if (!tabs_status.classList.contains('lightblue')) {
                         tabs_status.classList.add('lightblue');
                     }
+                    Onlines[ipAddress] = true;
                     dashboard_state.textContent = tabs_state.textContent = 'State : Online';
                     dashboard_state.style.color = tabs_state.style.color = "green";
                 }
@@ -368,6 +406,7 @@ function Add_To_Timers(ipAddress = null) {
                 if (tabs_status.classList.contains('lightblue')) {
                     tabs_status.classList.remove('lightblue');
                 }
+                Onlines[ipAddress] = false;
                 dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
                 dashboard_state.style.color = tabs_state.style.color = "red";
                 Commands[ipAddress] = 'Stop';
@@ -483,8 +522,9 @@ function showPage(ipAddress) {
     });
 
     // Show the tab body corresponding to the IP address
+    FocusIP = ipAddress;
     var page = TabsBody[ipAddress];
-    if (page) {
+    if (page) {        
         page.style.display = 'block';
     }
     else {
@@ -572,7 +612,39 @@ function Execute(ipAddress, Command, Value) {
     });
 }
 
+function togglePanel() {
+    var panel = document.getElementById('serial-panel');
+    var icon = document.getElementById('toggle-icon');
+    if (panel.classList.contains('visible')) {
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-left');
+    } else {
+        icon.classList.remove('fa-chevron-left');
+        icon.classList.add('fa-chevron-right');
+    }
+    panel.classList.toggle('visible');
+}
+
+function selectSerial(Serial) {
+    var page = TabsBody[FocusIP];
+    if (page) {
+
+        Serials[FocusIP] = Serial; 
+
+        var dashboard_serial = ProgressOfDashboard[FocusIP].querySelector('#serial');
+        var tabs_serial = TabsBody[FocusIP].querySelector('#serial');
+
+        dashboard_serial.innerHTML = tabs_serial.innerHTML = "Serial : " + Serials[FocusIP];
+    }
+    else {            
+        alert("Please focus on one device Selected");
+    }    
+}
+
 // Restore the state of the tabs when the page loads
 window.addEventListener('load', function () {
     restoreTabsState();
+
+    // Add event listener to any element (button, icon, etc.) to toggle the panel visibility
+    document.getElementById('toggle-panel-button').addEventListener('click', togglePanel);
 });
