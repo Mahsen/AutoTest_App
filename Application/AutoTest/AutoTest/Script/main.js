@@ -4,6 +4,8 @@ var Default_Refresh_Tasks = 1000;
 const IPs = [];
 // Object to store timers
 var Timers = {};
+// Object to store timers Blink
+var Timers_Blink = {};
 // Object to store progress dashboard
 var ProgressOfDashboard = {};
 // Object to store tab
@@ -117,21 +119,12 @@ function Control_OnClick_Pause(ipAddress = null) {
 
 // Function On Click Next
 function Control_OnClick_Next(ipAddress = null) {
-    if (Commands[ipAddress] == 'Next') {
+    if (Commands[ipAddress] == 'Play') {
         return;
     }
-    Execute(ipAddress, 'Next', '').then(function (response) {
-        Commands[ipAddress] = 'Next';
-    });
-}
-
-// Function On Click Repete
-function Control_OnClick_Repete(ipAddress = null) {
-    if (Commands[ipAddress] == 'Repete') {
-        return;
-    }
-    Execute(ipAddress, 'Repete', '').then(function (response) {
-        Commands[ipAddress] = 'Repete';
+    Execute(ipAddress, 'Play', '').then(function (response) {
+        TestCurrent[ipAddress]++;
+        Commands[ipAddress] = 'Play';
     });
 }
 
@@ -177,15 +170,6 @@ function Add_Control_To(ipAddress, obj) {
     obj.appendChild(nextIcon);
     nextIcon.addEventListener('click', function () { Control_OnClick_Next(ipAddress); });
 
-    // Repete icon
-    var repeteIcon = document.createElement('a');
-    repeteIcon.href = '#';
-    repeteIcon.style.color = '#401040';
-    repeteIcon.style.padding = '10px';
-    repeteIcon.setAttribute('title', 'Repete');
-    repeteIcon.classList.add('fas', 'fa-redo');
-    obj.appendChild(repeteIcon);
-    repeteIcon.addEventListener('click', function () { Control_OnClick_Repete(ipAddress); });
 }
 
 // Function to add a new to Tab
@@ -376,6 +360,7 @@ function Add_To_Timers(ipAddress = null) {
                                 listItem.classList.add('lightblue');
 
                                 var checkbox = document.createElement('input');
+                                checkbox.checked = true;
                                 checkbox.type = 'checkbox';
                                 listItem.appendChild(checkbox);
 
@@ -386,6 +371,9 @@ function Add_To_Timers(ipAddress = null) {
                                 var itemState = document.createElement('span');
                                 itemState.textContent = TestList[ipAddress][i];
                                 listItem.appendChild(itemState);
+
+                                var itemResponse = document.createElement('li');
+                                listItem.appendChild(itemResponse);
 
                                 tabs_list.appendChild(listItem);
                             }
@@ -457,31 +445,59 @@ function Add_To_Timers(ipAddress = null) {
                         Commands[ipAddress] = 'Pause';
                     }
                     else {
-                        Execute(ipAddress, TestList[ipAddress][TestCurrent[ipAddress]], '').then(function (response) {
-                            if ((response.Value == "[ERR:0]") || (response.Value==null)) {
-                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');                                
+                        if (tabs_list.getElementsByTagName("input")[TestCurrent[ipAddress]].checked) {
+                            if (TestList[ipAddress][TestCurrent[ipAddress]].indexOf('(') != -1) {
+                                var Command = TestList[ipAddress][TestCurrent[ipAddress]].split('(')[0];
+                                var Value = TestList[ipAddress][TestCurrent[ipAddress]].split('(')[1].split(')')[0];
+                                Value = Value.replace('#FileName', 'SAA_766_01_0207_02_v1_14021103');
+                                Value = Value.replace('#Domain', '94.139.169.122:8000');
+                                Value = Value.replace('#Serial', Serials[ipAddress]);
+                                let today = new Date().toLocaleDateString('fa-IR').replaceAll('/', '-').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+                                Value = Value.replace('#Date', today);
                             }
                             else {
-                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].innerHTML += response.Value;
-                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
-                                tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightgreen');
-                                TestCurrent[ipAddress]++; 
+                                var Command = TestList[ipAddress][TestCurrent[ipAddress]];
+                                var Value = "";
                             }
-                            //alert(response.Value);
-                            //if (response.Value == "Passed") {
-                            //    TestCurrent[ipAddress]++;                            
-                            //}
-                        });
+                            //alert("Command=" + Command + " Value=" + Value);
+                            if (!Timers_Blink[ipAddress]) {
+                                Timers_Blink[ipAddress] = setInterval(() => {
+                                    tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
+                                }, 200);
+                            }
+                            Execute(ipAddress, Command, Value).then(function (response) {
+                                if ((response.Value == "[ERR:0]") || (response.Value == null)) {
+
+                                }
+                                else {
+                                    if (Timers_Blink[ipAddress]) {
+                                        clearInterval(Timers_Blink[ipAddress]);
+                                        delete Timers_Blink[ipAddress];
+                                    }
+                                    //tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].innerHTML += response.Value;
+                                    tabs_list.getElementsByTagName("li")[TestCurrent[ipAddress]].innerHTML = response.Value;
+                                    if (tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.contains('lightblue')) {
+                                        tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
+                                    }
+                                    if ((response.Value.indexOf("error") == -1) && (response.Value.indexOf("Error") == -1) && (response.Value.indexOf("ERROR") == -1)) {
+                                        if (tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.contains('lightred')) {
+                                            tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightred');
+                                        }
+                                        tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightgreen');
+                                        TestCurrent[ipAddress]++;
+                                    }
+                                    else {
+                                        tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightred');
+                                        Commands[ipAddress] = 'Pause';
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            TestCurrent[ipAddress]++;
+                        }                        
                     }
                     tabs_status.classList.toggle('lightblue');
-                    break;
-                }
-                case 'Repete': {
-                    tabs_task.textContent = dashboard_task.textContent = 'Task : Repete';
-                    break;
-                }
-                case 'Next': {
-                    tabs_task.textContent = dashboard_task.textContent = 'Task : Next';
                     break;
                 }
                 case 'Pause': {
