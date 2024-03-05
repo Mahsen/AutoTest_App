@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Threading;
 
 namespace AutoTest
 {
@@ -26,15 +27,14 @@ namespace AutoTest
         public static StructData Execute(StructData inputdata)
         {
             StructData outputdata = new StructData();
+            // Create a new TcpClient
+            System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
 
             outputdata.Online = false;
             try
             {
-                // Create a new TcpClient
-                System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
-
                 // Set a timeout for connecting
-                int timeoutMilliseconds = 2000; 
+                int timeoutMilliseconds = 10000; 
                 IAsyncResult result = client.BeginConnect(inputdata.IP, 123, null, null);
                 // Wait for the connection to complete or timeout
                 bool success = result.AsyncWaitHandle.WaitOne(timeoutMilliseconds, true);
@@ -44,15 +44,17 @@ namespace AutoTest
                     // Connection was successful
                     client.EndConnect(result);
 
-                    outputdata.Online = true;
-
                     // Perform operations with the TcpClient
                     NetworkStream stream = client.GetStream();
 
                     byte[] messageBytes = Encoding.ASCII.GetBytes("<AUTOTEST:" + inputdata.Command + ">" + inputdata.Value+ "</AUTOTEST>\r\n");
                     stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
 
-                    messageBytes = new byte[512];
+                    for(int TimeOut=0; ((TimeOut<10) && (!stream.DataAvailable)); TimeOut++)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    messageBytes = new byte[1024];
                     // Receive the stream of bytes  
                     stream.Read(messageBytes, 0, messageBytes.Length);
                     string message = Encoding.UTF8.GetString(messageBytes);
@@ -60,10 +62,10 @@ namespace AutoTest
                     if ((message.IndexOf(">") != -1) && (message.IndexOf("</")!=-1))
                     {
                         outputdata.Value = message.Substring((message.IndexOf(">")+1), (message.IndexOf("</")-(message.IndexOf(">") + 1)));
+                        outputdata.Online = true;
                     }
 
                     stream.Dispose();
-                    client.Close();
 
                     // Close the connection
                     client.Close();
@@ -78,44 +80,10 @@ namespace AutoTest
             catch (SocketException ex)
             {
                 // Handle socket errors
+                client.Close(); // Close the client
                 Console.WriteLine($"SocketException: {ex.SocketErrorCode}");
             }
-            catch (TimeoutException ex)
-            {
-                // Handle timeout errors
-                Console.WriteLine($"TimeoutException: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                // Handle other exceptions
-                Console.WriteLine($"Exception: {ex.Message}");
-            }
 
-
-            /*
-            try
-            {
-                System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient(inputdata.IP, 123);
-                if (client.Connected) {
-                    outputdata.Online = true;
-                    NetworkStream stream = client.GetStream();
-
-                    byte[] messageBytes = Encoding.ASCII.GetBytes("123");
-                    stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
-
-                    messageBytes = new byte[32];
-                    // Receive the stream of bytes  
-                    stream.Read(messageBytes, 0, messageBytes.Length);
-
-                    stream.Dispose();
-                    client.Close();
-                }                
-            }
-            catch (Exception er) // Catch exceptions  
-            {
-                Console.WriteLine(er.Message);
-            }
-            */
             return outputdata; // Example response
         }
 
