@@ -77,11 +77,11 @@ namespace AutoTest
                     throw new TimeoutException("Connection timed out.");
                 }
             }
-            catch (SocketException ex)
+            catch (Exception ex)
             {
                 // Handle socket errors
                 client.Close(); // Close the client
-                Console.WriteLine($"SocketException: {ex.SocketErrorCode}");
+                Console.WriteLine($"SocketException: {ex.Message}");
             }
 
             return outputdata; // Example response
