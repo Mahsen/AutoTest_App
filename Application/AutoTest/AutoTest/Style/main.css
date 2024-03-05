@@ -254,8 +254,8 @@ h1 {
     margin-right: 10px;
 }
 
-.list-item span:last-child {
-    flex-grow: 1;
+.list-item li {
+
 }
 
 .box {
