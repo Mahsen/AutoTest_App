@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=12"/>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=13"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -69,7 +69,7 @@
     <p>This is the Settings page content.</p>
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=8"></script>
+<script type="text/javascript" src="Script/main.js?t=10"></script>
 
 <script type="text/javascript">
 
@@ -83,10 +83,10 @@
 	//alert(Execute('192.168.70.220', 'Link', '').Online);
 
     addNew("192.168.70.220");
-    addNew("11.11.11.11");
-    addNew("22.22.22.22");
-    addNew("33.33.33.33");
-    addNew("44.44.44.44");
+    //addNew("11.11.11.11");
+    //addNew("22.22.22.22");
+    //addNew("33.33.33.33");
+    //addNew("44.44.44.44");
 
 </script>
 
