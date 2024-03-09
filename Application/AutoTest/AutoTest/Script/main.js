@@ -22,6 +22,8 @@ var TestCurrent = {};
 var Serials = {};
 // Object to Onlines
 var Onlines = {};
+// Object to Reports
+var Reports = {};
 // IP Focus
 var FocusIP = "";
 
@@ -78,14 +80,23 @@ function addNew(ipAddress = null) {
 }
 
 // Function On Click Stop
-function Control_OnClick_Stop(ipAddress = null) {
-    if (Commands[ipAddress] == 'Stop') {
+function Control_OnClick_Stop(ipAddress = null) {    
+    if (!Onlines[ipAddress]) {
+        alert('The device is offline !');
         return;
+    }
+    else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+        alert('Please select serial of list serials on right side !');
+        return;
+    } 
+    if (Timers_Blink[ipAddress]) {
+        clearInterval(Timers_Blink[ipAddress]);
     }
     Execute(ipAddress, 'Stop', '').then(function (response) {
         var tabs_list = TabsBody[ipAddress].querySelector('#list');
         tabs_list.innerHTML = "";
         Commands[ipAddress] = 'Stop';
+        Reports[ipAddress] = '';
     });
 }
 
@@ -107,39 +118,67 @@ function Control_OnClick_Play(ipAddress = null) {
     });
 }
 
-// Function On Click Pause
-function Control_OnClick_Pause(ipAddress = null) {
-    if (Commands[ipAddress] == 'Pause') {
-        return;
-    }
-    Execute(ipAddress, 'Pause', '').then(function (response) {
-        Commands[ipAddress] = 'Pause';
-    });
-}
-
 // Function On Click Next
 function Control_OnClick_Next(ipAddress = null) {
     if (Commands[ipAddress] == 'Play') {
         return;
     }
+    else if (!Onlines[ipAddress]) {
+        alert('The device is offline !');
+        return;
+    }
+    else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+        alert('Please select serial of list serials on right side !');
+        return;
+    } 
     Execute(ipAddress, 'Play', '').then(function (response) {
         TestCurrent[ipAddress]++;
         Commands[ipAddress] = 'Play';
     });
 }
 
+// Function On Click Print
+function Control_OnClick_Print(ipAddress = null) {
+    if (Commands[ipAddress] != 'Pause') {
+        alert('The device is not ready to print !');
+        return;
+    }
+    else if (!Onlines[ipAddress]) {
+        alert('The device is offline !');
+        return;
+    }
+    else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+        alert('Please select serial of list serials on right side !');
+        return;
+    }
+    alert("Print report of : " + ipAddress);
+}
+
+// Function On Click Save
+function Control_OnClick_Save(ipAddress = null) {
+    /*
+    if (Commands[ipAddress] != 'Pause') {
+        alert('The device is not ready to save !');
+        return;
+    }
+    else if (!Onlines[ipAddress]) {
+        alert('The device is offline !');
+        return;
+    }
+    else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+        alert('Please select serial of list serials on right side !');
+        return;
+    }
+    alert("Saveing report of : " + ipAddress);
+    */
+    Execute(ipAddress, 'SaveReport', "123").then(function (response) {
+        alert("Save report is " + response.Value);
+    });   
+}
+
 // Function Add control Objects
 function Add_Control_To(ipAddress, obj) {
-    // Stop icon
-    var stopIcon = document.createElement('a');
-    stopIcon.href = '#';
-    stopIcon.style.color = '#401040';
-    stopIcon.style.padding = '10px';
-    stopIcon.setAttribute('title', 'Stop');
-    stopIcon.classList.add('fas', 'fa-stop');
-    obj.appendChild(stopIcon);
-    stopIcon.addEventListener('click', function () { Control_OnClick_Stop(ipAddress); });
-
+    
     // Play icon
     var playIcon = document.createElement('a');
     playIcon.href = '#';
@@ -150,15 +189,15 @@ function Add_Control_To(ipAddress, obj) {
     obj.appendChild(playIcon);
     playIcon.addEventListener('click', function () { Control_OnClick_Play(ipAddress); });
 
-    // Pause icon
-    var PauseIcon = document.createElement('a');
-    PauseIcon.href = '#';
-    PauseIcon.style.color = '#401040';
-    PauseIcon.style.padding = '10px';
-    PauseIcon.setAttribute('title', 'Pause');
-    PauseIcon.classList.add('fas', 'fa-pause');
-    obj.appendChild(PauseIcon);
-    PauseIcon.addEventListener('click', function () { Control_OnClick_Pause(ipAddress); });
+    // Stop icon
+    var stopIcon = document.createElement('a');
+    stopIcon.href = '#';
+    stopIcon.style.color = '#401040';
+    stopIcon.style.padding = '10px';
+    stopIcon.setAttribute('title', 'Stop');
+    stopIcon.classList.add('fas', 'fa-stop');
+    obj.appendChild(stopIcon);
+    stopIcon.addEventListener('click', function () { Control_OnClick_Stop(ipAddress); });
 
     // Next icon
     var nextIcon = document.createElement('a');
@@ -169,6 +208,26 @@ function Add_Control_To(ipAddress, obj) {
     nextIcon.classList.add('fas', 'fa-forward');
     obj.appendChild(nextIcon);
     nextIcon.addEventListener('click', function () { Control_OnClick_Next(ipAddress); });
+
+    // Print icon
+    var printIcon = document.createElement('a');
+    printIcon.href = '#';
+    printIcon.style.color = '#401040';
+    printIcon.style.padding = '10px';
+    printIcon.setAttribute('title', 'Print');
+    printIcon.classList.add('fas', 'fa-print');
+    obj.appendChild(printIcon);
+    printIcon.addEventListener('click', function () { Control_OnClick_Print(ipAddress); });
+
+    // Save icon
+    var saveIcon = document.createElement('a');
+    saveIcon.href = '#';
+    saveIcon.style.color = '#401040';
+    saveIcon.style.padding = '10px';
+    saveIcon.setAttribute('title', 'Save');
+    saveIcon.classList.add('fas', 'fa-save');
+    obj.appendChild(saveIcon);
+    saveIcon.addEventListener('click', function () { Control_OnClick_Save(ipAddress); });
 
 }
 
@@ -353,29 +412,48 @@ function Add_To_Timers(ipAddress = null) {
                     Execute(ipAddress, 'List', '').then(function (response) { 
                         if (tabs_list.innerHTML == "") {
                             TestList[ipAddress] = response.Value.split(',');
+                            TestList[ipAddress].length--;
+                            TestCurrent[ipAddress] = 0;
                             for (var i = 0; i < TestList[ipAddress].length; i++) {
-                                var listItem = document.createElement('div');
-                                listItem.id = TestList[ipAddress][i];
-                                listItem.classList.add('list-item');
-                                listItem.classList.add('lightblue');
+                                if (TestList[ipAddress][i] != "") {
+                                    var Report = (TestList[ipAddress][i]).split('=');
+                                    
+                                    var listItem = document.createElement('div');
+                                    listItem.id = Report[0];
+                                    listItem.classList.add('list-item');
+                                    if (Report[1] != "") {
+                                        TestCurrent[ipAddress] = (i+1);                                        
+                                        if ((Report[1].indexOf("Error") == -1) && (Report[1].indexOf("ERROR") == -1)) {
+                                            listItem.classList.add('lightgreen');
+                                        }
+                                        else {
+                                            listItem.classList.add('lightred');
+                                        }
+                                    }
+                                    else {
+                                        listItem.classList.add('lightblue');
+                                    }
 
-                                var checkbox = document.createElement('input');
-                                checkbox.checked = true;
-                                checkbox.type = 'checkbox';
-                                listItem.appendChild(checkbox);
+                                    var checkbox = document.createElement('input');
+                                    checkbox.checked = true;
+                                    checkbox.type = 'checkbox';
+                                    listItem.appendChild(checkbox);
 
-                                var itemName = document.createElement('span');
-                                itemName.textContent = " Item " + (i + 1) + " : ";
-                                listItem.appendChild(itemName);
+                                    var itemName = document.createElement('span');
+                                    itemName.textContent = " Item " + (i + 1) + " : ";
+                                    listItem.appendChild(itemName);
 
-                                var itemState = document.createElement('span');
-                                itemState.textContent = TestList[ipAddress][i];
-                                listItem.appendChild(itemState);
+                                    var itemState = document.createElement('span');
+                                    itemState.textContent = Report[0];
+                                    listItem.appendChild(itemState);
 
-                                var itemResponse = document.createElement('li');
-                                listItem.appendChild(itemResponse);
-
-                                tabs_list.appendChild(listItem);
+                                    var itemResponse = document.createElement('li');
+                                    itemResponse.innerHTML = Report[1];
+                                    listItem.appendChild(itemResponse);
+                                    
+                                    TestList[ipAddress][i] = Report[0];
+                                    tabs_list.appendChild(listItem);
+                                }
                             }
                         }
                     });
@@ -413,8 +491,7 @@ function Add_To_Timers(ipAddress = null) {
                     }
                     if (!dashboard_progress.classList.contains('lightgray')) {
                         dashboard_progress.classList.add('lightgray');
-                    }
-                    TestCurrent[ipAddress] = 0;
+                    }                    
                     dashboard_progress.style.width = '0%';
                     dashboard_progress.innerHTML = '';
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Stoped';
@@ -443,6 +520,11 @@ function Add_To_Timers(ipAddress = null) {
                         dashboard_progress.classList.add('lightgreen');
                         tabs_task.textContent = dashboard_task.textContent = 'Task : End';
                         Commands[ipAddress] = 'Pause';
+                        Reports[ipAddress] = "";
+                        for (var i = 0; i < TestList[ipAddress].length; i++) {
+                            Reports[ipAddress] += TestList[ipAddress][i] + "=";
+                            Reports[ipAddress] += tabs_list.getElementsByTagName("li")[i].innerHTML + ";";
+                        }
                     }
                     else {
                         if (tabs_list.getElementsByTagName("input")[TestCurrent[ipAddress]].checked) {
@@ -474,7 +556,6 @@ function Add_To_Timers(ipAddress = null) {
                                         clearInterval(Timers_Blink[ipAddress]);
                                         delete Timers_Blink[ipAddress];
                                     }
-                                    //tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].innerHTML += response.Value;
                                     tabs_list.getElementsByTagName("li")[TestCurrent[ipAddress]].innerHTML = response.Value;
                                     if (tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.contains('lightblue')) {
                                         tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
@@ -607,6 +688,7 @@ function Execute(ipAddress, Command, Value) {
     return new Promise(function (resolve, reject) {
         var StructData = {
             IP: ipAddress,
+            Serial: Serials[ipAddress],
             Command: Command,
             Value: Value,
             Online: false

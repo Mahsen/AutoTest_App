@@ -9,15 +9,19 @@ using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Threading;
+using System.Runtime.Remoting.Contexts;
+using System.Data;
 
 namespace AutoTest
 {
     public partial class Default : System.Web.UI.Page
     {
-        AutoTestDataContext DataContext;
+        //static AutoTestDataContext DataContext;
+
         public class StructData
         {
             public string IP { get; set; }
+            public string Serial { get; set; }
             public string Command { get; set; }
             public string Value { get; set; }
             public bool Online { get; set; }
@@ -27,6 +31,12 @@ namespace AutoTest
         public static StructData Execute(StructData inputdata)
         {
             StructData outputdata = new StructData();
+
+            if(inputdata.Command == "SaveReport") {
+                outputdata.Value = SaveReport(inputdata.Serial, inputdata.Value);
+                return outputdata;
+            }
+
             // Create a new TcpClient
             System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
 
@@ -84,22 +94,58 @@ namespace AutoTest
                 Console.WriteLine($"SocketException: {ex.Message}");
             }
 
-            return outputdata; // Example response
+            return outputdata;
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
+            //AutoTest.Default.
+
+
+            /*
             DataContext = new AutoTestDataContext();
+            List<Device> Devices = DataContext.Devices.Where(x => x.Serial == "1000000001").ToList();
+            foreach (var device in Devices)
+            {
+                device.Report = "123";
+            }
+
+            //DataContext.Devices.Where(x => x.Serial == Serial).ToList().ForEach(w => w.Report = Report);
+            DataContext.SubmitChanges();
+            */
         }
 
         public List<String> GetSerials()
         {
             List<String> Serials = new List<String>();
+            /*
             DataContext.Devices.ToList().ForEach(device =>
             {
                 Serials.Add(device.Serial.ToString());
-            });
+            });*/
             return Serials;
         }
+
+        static String SaveReport(String Serial, String Report)
+        {
+            try
+            {/*
+                List<Device> Devices = DataContext.Devices.Where(x => x.Serial == Serial).ToList();
+                foreach (var device in Devices)
+                {
+                    device.Report = Report;                    
+                }
+                
+                //DataContext.Devices.Where(x => x.Serial == Serial).ToList().ForEach(w => w.Report = Report);
+                DataContext.SubmitChanges();*/
+                return "OK";
+            }
+            catch (Exception er)
+            {
+                return ("ERROR: " + er.Message);
+            }
+        }
+
     }
 }
