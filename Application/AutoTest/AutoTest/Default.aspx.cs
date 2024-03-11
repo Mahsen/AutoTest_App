@@ -11,12 +11,14 @@ using System.Web.UI.WebControls;
 using System.Threading;
 using System.Runtime.Remoting.Contexts;
 using System.Data;
+using System.Web.DynamicData.ModelProviders;
 
 namespace AutoTest
 {
     public partial class Default : System.Web.UI.Page
     {
         //static AutoTestDataContext DataContext;
+        static AutoTestEntities3 DataContext;
 
         public class StructData
         {
@@ -44,7 +46,7 @@ namespace AutoTest
             try
             {
                 // Set a timeout for connecting
-                int timeoutMilliseconds = 10000; 
+                int timeoutMilliseconds = 5000; 
                 IAsyncResult result = client.BeginConnect(inputdata.IP, 123, null, null);
                 // Wait for the connection to complete or timeout
                 bool success = result.AsyncWaitHandle.WaitOne(timeoutMilliseconds, true);
@@ -60,7 +62,7 @@ namespace AutoTest
                     byte[] messageBytes = Encoding.ASCII.GetBytes("<AUTOTEST:" + inputdata.Command + ">" + inputdata.Value+ "</AUTOTEST>\r\n");
                     stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
 
-                    for(int TimeOut=0; ((TimeOut<10) && (!stream.DataAvailable)); TimeOut++)
+                    for(int TimeOut=0; ((TimeOut<5) && (!stream.DataAvailable)); TimeOut++)
                     {
                         Thread.Sleep(1000);
                     }
@@ -99,46 +101,27 @@ namespace AutoTest
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
-            //AutoTest.Default.
-
-
-            /*
-            DataContext = new AutoTestDataContext();
-            List<Device> Devices = DataContext.Devices.Where(x => x.Serial == "1000000001").ToList();
-            foreach (var device in Devices)
-            {
-                device.Report = "123";
-            }
-
-            //DataContext.Devices.Where(x => x.Serial == Serial).ToList().ForEach(w => w.Report = Report);
-            DataContext.SubmitChanges();
-            */
+            DataContext = new AutoTestEntities3();
         }
 
         public List<String> GetSerials()
         {
+            
             List<String> Serials = new List<String>();
-            /*
-            DataContext.Devices.ToList().ForEach(device =>
+
+            DataContext.Device.ToList().ForEach(device =>
             {
                 Serials.Add(device.Serial.ToString());
-            });*/
+            });
             return Serials;
         }
 
         static String SaveReport(String Serial, String Report)
         {
             try
-            {/*
-                List<Device> Devices = DataContext.Devices.Where(x => x.Serial == Serial).ToList();
-                foreach (var device in Devices)
-                {
-                    device.Report = Report;                    
-                }
-                
-                //DataContext.Devices.Where(x => x.Serial == Serial).ToList().ForEach(w => w.Report = Report);
-                DataContext.SubmitChanges();*/
+            {
+                DataContext.Device.Where(x => x.Serial == Serial).ToList().ForEach(w => w.Report = Report);
+                DataContext.SaveChanges();
                 return "OK";
             }
             catch (Exception er)

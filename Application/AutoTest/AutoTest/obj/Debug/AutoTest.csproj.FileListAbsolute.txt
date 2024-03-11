@@ -172,3 +172,5 @@ H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\roslyn\V
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CopyComplete
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\EntityFramework.dll
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\EntityFramework.xml

@@ -26,7 +26,8 @@ var Onlines = {};
 var Reports = {};
 // IP Focus
 var FocusIP = "";
-
+// TryError
+var TryError = 0;
 
 // Function to open the modal
 function openModal() {
@@ -151,12 +152,20 @@ function Control_OnClick_Print(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    alert("Print report of : " + ipAddress);
+
+    var printWindow = window.open('', '_blank');
+    document.getElementById('printable_div_id_SN_Value').innerHTML = "SN:" + Serials[ipAddress];
+    document.getElementById('printable_div_id_ERR_Value').innerHTML = "Err:0";
+    var printContents = document.getElementById('printable_div_id').innerHTML;
+
+    printWindow.document.write(printContents);
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
 }
 
 // Function On Click Save
 function Control_OnClick_Save(ipAddress = null) {
-    /*
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to save !');
         return;
@@ -169,10 +178,8 @@ function Control_OnClick_Save(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    alert("Saveing report of : " + ipAddress);
-    */
-    Execute(ipAddress, 'SaveReport', "123").then(function (response) {
-        alert("Save report is " + response.Value);
+    Execute(ipAddress, 'SaveReport', Reports[ipAddress]).catch(function (response) {
+        alert("Save report Failed");
     });   
 }
 
@@ -255,6 +262,7 @@ function Add_To_Tab(ipAddress = null) {
 
     // IP address wrapper with different color
     var ipWrapper = document.createElement('div');
+    ipWrapper.id = 'ip';
     ipWrapper.classList.add('ip-wrapper');
     ipWrapper.textContent = 'Device IP : ' + ipAddress;
     TabsBody[ipAddress].appendChild(ipWrapper);
@@ -263,14 +271,14 @@ function Add_To_Tab(ipAddress = null) {
     var stateElement = document.createElement('div');
     stateElement.id = 'state';
     stateElement.style.paddingTop = '10px';
-    stateElement.textContent = 'State : Disconnected';
+    stateElement.textContent = 'State : Offline';
     TabsBody[ipAddress].appendChild(stateElement);
 
     // Task div
     var taskElement = document.createElement('div');
     taskElement.id = 'task';
     taskElement.style.paddingBottom = '10px';
-    taskElement.textContent = 'Task : IDLE';
+    taskElement.textContent = 'Task : Stop';
     TabsBody[ipAddress].appendChild(taskElement);
 
     // Serial div
@@ -325,6 +333,7 @@ function Add_To_Dashboard(ipAddress = null) {
 
     // IP address wrapper with different color
     var ipWrapper = document.createElement('div');
+    ipWrapper.id = 'ip';
     ipWrapper.classList.add('ip-wrapper');
     ipWrapper.textContent = 'Device IP : ' + ipAddress;
     ProgressOfDashboard[ipAddress].appendChild(ipWrapper);
@@ -385,6 +394,31 @@ function Remove_of_Dashboard(ipAddress = null) {
 
 // Function to add a new to Timers
 var t = 0;
+function Handle_Timers_Fault(ipAddress = null) {
+    var tabs_status = Tabs[ipAddress].querySelector('#status');
+    var tabs_list = TabsBody[ipAddress].querySelector('#list');
+    var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
+    TryError++;
+    if (Commands[ipAddress] != 'Play' || TryError >= 40) {
+        tabs_list.innerHTML = "";
+        if (tabs_status.classList.contains('lightblue')) {
+            tabs_status.classList.remove('lightblue');
+        }
+        Onlines[ipAddress] = false;
+        dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
+        dashboard_state.style.color = tabs_state.style.color = "red";
+        Commands[ipAddress] = 'Stop';
+        Add_To_Timers(ipAddress);
+        TryError = 0;
+        return false;
+    }
+    else {
+        setTimeout(() => { Add_To_Timers(ipAddress); }, 2000);
+        return true;
+    }
+}
+// Function to add a new to Timers
+var t = 0;
 function Add_To_Timers(ipAddress = null) {
     // Add timer
     Timers[ipAddress] = setTimeout(() => {
@@ -392,6 +426,7 @@ function Add_To_Timers(ipAddress = null) {
         var dashboard_task = ProgressOfDashboard[ipAddress].querySelector('#task');
         var dashboard_progress = ProgressOfDashboard[ipAddress].querySelector('#progress');
         var dashboard_serial = ProgressOfDashboard[ipAddress].querySelector('#serial');
+        var dashboard_ip = ProgressOfDashboard[ipAddress].querySelector('#ip');
 
         var tabs_status = Tabs[ipAddress].querySelector('#status');
         var tabs_state = TabsBody[ipAddress].querySelector('#state');
@@ -407,9 +442,10 @@ function Add_To_Timers(ipAddress = null) {
         }
 
         Execute(ipAddress, 'Link', '').then(function (response) {
-            if (response.Online) {document.getElementsByTagName("p")
+            if (response.Online) {
+                document.getElementsByTagName("p")
                 if (tabs_list.innerHTML == "") {
-                    Execute(ipAddress, 'List', '').then(function (response) { 
+                    Execute(ipAddress, 'List', '').then(function (response) {
                         if (tabs_list.innerHTML == "") {
                             TestList[ipAddress] = response.Value.split(',');
                             TestList[ipAddress].length--;
@@ -417,21 +453,24 @@ function Add_To_Timers(ipAddress = null) {
                             for (var i = 0; i < TestList[ipAddress].length; i++) {
                                 if (TestList[ipAddress][i] != "") {
                                     var Report = (TestList[ipAddress][i]).split('=');
-                                    
+
                                     var listItem = document.createElement('div');
                                     listItem.id = Report[0];
                                     listItem.classList.add('list-item');
                                     if (Report[1] != "") {
-                                        TestCurrent[ipAddress] = (i+1);                                        
+                                        TestCurrent[ipAddress] = (i + 1);
                                         if ((Report[1].indexOf("Error") == -1) && (Report[1].indexOf("ERROR") == -1)) {
                                             listItem.classList.add('lightgreen');
+                                            dashboard_ip.classList.add('lightgreen');
                                         }
                                         else {
                                             listItem.classList.add('lightred');
+                                            dashboard_ip.classList.add('lightred');
                                         }
                                     }
                                     else {
                                         listItem.classList.add('lightblue');
+                                        dashboard_ip.classList.add('lightblue');
                                     }
 
                                     var checkbox = document.createElement('input');
@@ -450,7 +489,7 @@ function Add_To_Timers(ipAddress = null) {
                                     var itemResponse = document.createElement('li');
                                     itemResponse.innerHTML = Report[1];
                                     listItem.appendChild(itemResponse);
-                                    
+
                                     TestList[ipAddress][i] = Report[0];
                                     tabs_list.appendChild(listItem);
                                 }
@@ -468,14 +507,9 @@ function Add_To_Timers(ipAddress = null) {
                 }
             }
             else {
-                tabs_list.innerHTML = "";
-                if (tabs_status.classList.contains('lightblue')) {
-                    tabs_status.classList.remove('lightblue');
-                }
-                Onlines[ipAddress] = false;
-                dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
-                dashboard_state.style.color = tabs_state.style.color = "red";
-                Commands[ipAddress] = 'Stop';
+                if (Handle_Timers_Fault(ipAddress)) {
+                    return;
+                }                
             }
 
             switch (Commands[ipAddress]) {
@@ -491,7 +525,7 @@ function Add_To_Timers(ipAddress = null) {
                     }
                     if (!dashboard_progress.classList.contains('lightgray')) {
                         dashboard_progress.classList.add('lightgray');
-                    }                    
+                    }
                     dashboard_progress.style.width = '0%';
                     dashboard_progress.innerHTML = '';
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Stoped';
@@ -510,7 +544,7 @@ function Add_To_Timers(ipAddress = null) {
                     if (!dashboard_progress.classList.contains('lightblue')) {
                         dashboard_progress.classList.add('lightblue');
                     }
-                    dashboard_progress.style.width = ((TestCurrent[ipAddress] / TestList[ipAddress].length)*100) + '%';
+                    dashboard_progress.style.width = ((TestCurrent[ipAddress] / TestList[ipAddress].length) * 100) + '%';
                     dashboard_progress.innerHTML = Math.round((TestCurrent[ipAddress] / TestList[ipAddress].length) * 100) + '%';
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Playing';
                     if (TestCurrent[ipAddress] >= TestList[ipAddress].length) {
@@ -525,6 +559,8 @@ function Add_To_Timers(ipAddress = null) {
                             Reports[ipAddress] += TestList[ipAddress][i] + "=";
                             Reports[ipAddress] += tabs_list.getElementsByTagName("li")[i].innerHTML + ";";
                         }
+                        Control_OnClick_Save(ipAddress);
+                        Control_OnClick_Print(ipAddress);
                     }
                     else {
                         if (tabs_list.getElementsByTagName("input")[TestCurrent[ipAddress]].checked) {
@@ -545,6 +581,7 @@ function Add_To_Timers(ipAddress = null) {
                             if (!Timers_Blink[ipAddress]) {
                                 Timers_Blink[ipAddress] = setInterval(() => {
                                     tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
+                                    dashboard_ip.classList.toggle('lightblue');
                                 }, 200);
                             }
                             Execute(ipAddress, Command, Value).then(function (response) {
@@ -559,16 +596,20 @@ function Add_To_Timers(ipAddress = null) {
                                     tabs_list.getElementsByTagName("li")[TestCurrent[ipAddress]].innerHTML = response.Value;
                                     if (tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.contains('lightblue')) {
                                         tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
+                                        dashboard_ip.classList.remove('lightblue');
                                     }
                                     if ((response.Value.indexOf("error") == -1) && (response.Value.indexOf("Error") == -1) && (response.Value.indexOf("ERROR") == -1)) {
                                         if (tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.contains('lightred')) {
                                             tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightred');
+                                            dashboard_ip.classList.remove('lightred');
                                         }
                                         tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightgreen');
+                                        dashboard_ip.classList.add('lightgreen');
                                         TestCurrent[ipAddress]++;
                                     }
                                     else {
                                         tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightred');
+                                        dashboard_ip.classList.add('lightred');
                                         Commands[ipAddress] = 'Pause';
                                     }
                                 }
@@ -576,7 +617,7 @@ function Add_To_Timers(ipAddress = null) {
                         }
                         else {
                             TestCurrent[ipAddress]++;
-                        }                        
+                        }
                     }
                     tabs_status.classList.toggle('lightblue');
                     break;
@@ -585,12 +626,13 @@ function Add_To_Timers(ipAddress = null) {
                     tabs_task.textContent = dashboard_task.textContent = 'Task : Pause';
                     break;
                 }
-            }        
-
+            }
             Add_To_Timers(ipAddress);
+            TryError = 0;
         }).catch(function (error) {
-            tabs_list.innerHTML = "";
-            Add_To_Timers(ipAddress);
+            if (Handle_Timers_Fault(ipAddress)) {
+                return;
+            } 
         });
     }, Default_Refresh_Tasks);
     //console.log('Add_To_Timers(' + ipAddress + ')');
@@ -733,6 +775,7 @@ function selectSerial(Serial) {
         var tabs_serial = TabsBody[FocusIP].querySelector('#serial');
 
         dashboard_serial.innerHTML = tabs_serial.innerHTML = "Serial : " + Serials[FocusIP];
+        togglePanel();
     }
     else {            
         alert("Please focus on one device Selected");
