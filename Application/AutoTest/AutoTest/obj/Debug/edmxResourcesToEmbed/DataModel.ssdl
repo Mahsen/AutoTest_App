@@ -8,6 +8,15 @@
     <Property Name="Serial" Type="varchar" MaxLength="20" />
     <Property Name="Report" Type="varchar" MaxLength="2048" />
   </EntityType>
+  <EntityType Name="Tester">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="int" Nullable="false" />
+    <Property Name="IP" Type="varchar" MaxLength="16" />
+    <Property Name="Port" Type="int" />
+    <Property Name="Name" Type="varchar" MaxLength="255" />
+  </EntityType>
   <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
   <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
@@ -41,5 +50,6 @@
   <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="AutoTestModelStoreContainer">
     <EntitySet Name="Device" EntityType="Self.Device" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tester" EntityType="Self.Tester" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

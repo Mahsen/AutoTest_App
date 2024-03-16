@@ -73,6 +73,9 @@ function addNew(ipAddress = null) {
 
     // Close the modal if an IP address was provided
     if (ipAddress !== null) {
+        Execute(ipAddress, 'AddTester', ipAddress).catch(function (response) {
+            alert("Add Tester Failed");
+        });
         closeModal();
     }
 
@@ -250,9 +253,26 @@ function Add_To_Tab(ipAddress = null) {
     var statusCircle = document.createElement('div');
     statusCircle.id = 'status';
     statusCircle.classList.add('status-circle');
-
     newTabLink.appendChild(statusCircle);
+
     Tabs[ipAddress].appendChild(newTabLink);
+
+    /*
+    var removeCircle = document.createElement('a');
+    removeCircle.classList.add('remove-circle');
+    removeCircle.href = '#';
+    removeCircle.dir = 'ltr';
+    removeCircle.innerHTML = "X";
+    removeCircle.id = 'remove';
+    removeCircle.addEventListener('click', function (event) {
+        Execute(ipAddress, 'RemoveTester', ipAddress).then(function (response) {
+            location.reload();
+        }).catch(function (response) {
+            alert("Remove Tester Failed");
+        });
+    }); 
+    Tabs[ipAddress].appendChild(removeCircle);
+    */
 
     // Create a new body element for the tab content
     TabsBody[ipAddress] = document.createElement('div');
@@ -567,7 +587,7 @@ function Add_To_Timers(ipAddress = null) {
                             if (TestList[ipAddress][TestCurrent[ipAddress]].indexOf('(') != -1) {
                                 var Command = TestList[ipAddress][TestCurrent[ipAddress]].split('(')[0];
                                 var Value = TestList[ipAddress][TestCurrent[ipAddress]].split('(')[1].split(')')[0];
-                                Value = Value.replace('#FileName', 'SAA_766_01_0207_02_v1_14021103');
+                                Value = Value.replace('#FileName', 'SAA_766_01_0207_02_v1_14021223');
                                 Value = Value.replace('#Domain', '94.139.169.122:8000');
                                 Value = Value.replace('#Serial', Serials[ipAddress]);
                                 let today = new Date().toLocaleDateString('fa-IR').replaceAll('/', '-').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));

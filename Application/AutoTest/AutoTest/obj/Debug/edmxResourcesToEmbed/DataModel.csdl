@@ -32,6 +32,7 @@
     </FunctionImport>
     <FunctionImport Name="sp_upgraddiagrams" />
     <EntitySet Name="Device" EntityType="AutoTestModel.Device" />
+    <EntitySet Name="Tester" EntityType="AutoTestModel.Tester" />
   </EntityContainer>
   <ComplexType Name="sp_helpdiagramdefinition_Result">
     <Property Type="Int32" Name="version" Nullable="true" />
@@ -51,5 +52,14 @@
     <Property Name="ID" Type="Int32" Nullable="false" />
     <Property Name="Serial" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
     <Property Name="Report" Type="String" MaxLength="2048" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="Tester">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="IP" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="Port" Type="Int32" />
+    <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
   </EntityType>
 </Schema>

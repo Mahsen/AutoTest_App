@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=14"/>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=16"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -67,6 +67,16 @@
     <!-- Content for Settings page -->
     <h1>Settings</h1>
     <p>This is the Settings page content.</p>
+    <p>
+        Upload excel serials file in there
+        <form id="Form1" method="post" runat="server" EncType="multipart/form-data" action="Default.aspx">
+         Image file to upload to the server: <INPUT id="oFile" type="file" runat="server" NAME="oFile">
+         <asp:button id="btnUpload" type="submit" text="Upload" runat="server"></asp:button>
+         <asp:Panel ID="frmConfirmation" Visible="False" Runat="server">
+            <asp:Label id="lblUploadResult" Runat="server"></asp:Label>
+         </asp:Panel>
+      </form>
+     </p>
 </div>
 
 <div id='printable_div_id' style="display: none;">
@@ -74,12 +84,36 @@
 	<div id="printable_div_id_ERR_Value">Err:0</div>
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=16"></script>
+<script type="text/javascript" src="Script/main.js?t=17"></script>
 
 <script type="text/javascript">
-    addNew("192.168.70.201");
-    addNew("192.168.70.202");
-</script>
+<%
+GetTester().ForEach(ip =>
+{
+    Response.Write("addNew('" + ip.ToString() + "');");
+});
+%>
 
+async function AJAXSubmit (oFormElement) {
+    var resultElement = oFormElement.elements.namedItem("result");
+    const formData = new FormData(oFormElement);
+
+    try {
+    const response = await fetch(oFormElement.action, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (response.ok) {
+      window.location.href = '/';
+    }
+
+    resultElement.value = 'Result: ' + response.status + ' ' + 
+      response.statusText;
+    } catch (error) {
+      console.error('Error:', error);
+    }
+}
+</script>
 </body>
 </html>

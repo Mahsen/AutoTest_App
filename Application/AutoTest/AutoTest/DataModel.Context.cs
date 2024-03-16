@@ -29,6 +29,7 @@ namespace AutoTest
         }
     
         public DbSet<Device> Device { get; set; }
+        public DbSet<Tester> Tester { get; set; }
     
         public virtual int sp_alterdiagram(string diagramname, Nullable<int> owner_id, Nullable<int> version, byte[] definition)
         {

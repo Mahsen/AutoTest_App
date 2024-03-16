@@ -13,6 +13,15 @@
           <Property Name="Serial" Type="varchar" MaxLength="20" />
           <Property Name="Report" Type="varchar" MaxLength="2048" />
         </EntityType>
+        <EntityType Name="Tester">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="IP" Type="varchar" MaxLength="16" />
+          <Property Name="Port" Type="int" />
+          <Property Name="Name" Type="varchar" MaxLength="255" />
+        </EntityType>
         <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
         <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
@@ -46,6 +55,7 @@
         <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="AutoTestModelStoreContainer">
           <EntitySet Name="Device" EntityType="Self.Device" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tester" EntityType="Self.Tester" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -83,6 +93,7 @@
           </FunctionImport>
           <FunctionImport Name="sp_upgraddiagrams" />
           <EntitySet Name="Device" EntityType="AutoTestModel.Device" />
+          <EntitySet Name="Tester" EntityType="AutoTestModel.Tester" />
         </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -102,6 +113,15 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Serial" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Report" Type="String" MaxLength="2048" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Tester">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="IP" Type="String" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="Port" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -138,6 +158,16 @@
               <MappingFragment StoreEntitySet="Device">
                 <ScalarProperty Name="Report" ColumnName="Report" />
                 <ScalarProperty Name="Serial" ColumnName="Serial" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tester">
+            <EntityTypeMapping TypeName="AutoTestModel.Tester">
+              <MappingFragment StoreEntitySet="Tester">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Port" ColumnName="Port" />
+                <ScalarProperty Name="IP" ColumnName="IP" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
