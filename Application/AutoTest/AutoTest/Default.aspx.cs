@@ -153,17 +153,17 @@ namespace AutoTest
                 return ("ERROR");
             }
             try {
+                bool Repeated = false;
                 int NumberOfTester = 0;
                 Tester Tester_l = new Tester();
 
                 DataContext.Tester.ToList().ForEach(tester => {
                     NumberOfTester++;
                     if (tester.IP == ip) {
-                        NumberOfTester = -1;
-                        return;
+                        Repeated = true;
                     }                    
                 });
-                if(NumberOfTester == -1) {
+                if(Repeated) {
                     return "ERROR";
                 }
                 NumberOfTester++;
