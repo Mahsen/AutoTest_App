@@ -186,6 +186,20 @@ function Control_OnClick_Save(ipAddress = null) {
     });   
 }
 
+// Function On Click Delete device
+function Control_OnClick_Delete_Device(ipAddress = null) {
+    Execute(ipAddress, 'RemoveTester', ipAddress).then(function (response) {
+        if (response.Value.indexOf("ERROR") != -1) {
+            alert("Remove Tester Failed");
+        }
+        else {
+            location.reload();
+        }        
+    }).catch(function (response) {
+        alert("Remove Tester Failed");
+    });
+}
+
 // Function Add control Objects
 function Add_Control_To(ipAddress, obj) {
     
