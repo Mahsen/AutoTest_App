@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=16"/>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=17"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -67,16 +67,29 @@
     <!-- Content for Settings page -->
     <h1>Settings</h1>
     <p>This is the Settings page content.</p>
+    <br />
     <p>
-        Upload excel serials file in there
+        Upload text file of serials split by newline in there to gnerate list
         <form id="Form1" method="post" runat="server" EncType="multipart/form-data" action="Default.aspx">
-         Image file to upload to the server: <INPUT id="oFile" type="file" runat="server" NAME="oFile">
-         <asp:button id="btnUpload" type="submit" text="Upload" runat="server"></asp:button>
+         Upload to the server: <INPUT id="oFile" type="file" runat="server" NAME="oFile">
+         <asp:button id="btnUpload" type="submit" text="Upload" accept=".txt" runat="server"></asp:button>
          <asp:Panel ID="frmConfirmation" Visible="False" Runat="server">
             <asp:Label id="lblUploadResult" Runat="server"></asp:Label>
          </asp:Panel>
       </form>
-     </p>
+    </p>
+    <br />
+    <p>
+        List of devices
+        <%
+        GetTester().ForEach(ip =>
+        {
+            Response.Write("<div>IP : " + ip.ToString() + " <button class='lightred' onclick='Control_OnClick_Delete_Device(\"" + ip.ToString() + "\")'>Delete</button></div>");
+        });
+        %>
+    </p>
+
+
 </div>
 
 <div id='printable_div_id' style="display: none;">
@@ -84,7 +97,7 @@
 	<div id="printable_div_id_ERR_Value">Err:0</div>
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=17"></script>
+<script type="text/javascript" src="Script/main.js?t=18"></script>
 
 <script type="text/javascript">
 <%
