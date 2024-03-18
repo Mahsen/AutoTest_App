@@ -125,10 +125,11 @@ namespace AutoTest
             
             List<String> Serials = new List<String>();
 
-            DataContext.Device.ToList().ForEach(device =>
-            {
-                Serials.Add(device.Serial.ToString());
-            });
+                DataContext.Device.ToList().ForEach(device =>
+                {
+                    Serials.Add(device.Serial.ToString());
+                });
+            
             return Serials;
         }
 
@@ -183,13 +184,20 @@ namespace AutoTest
 
         public List<String> GetTester()
         {
-
             List<String> IPs = new List<String>();
 
-            DataContext.Tester.ToList().ForEach(device =>
+            try
+            {                
+
+                DataContext.Tester.ToList().ForEach(device =>
+                {
+                    IPs.Add(device.IP.ToString());
+                });
+            }
+            catch(Exception er)
             {
-                IPs.Add(device.IP.ToString());
-            });
+
+            }
             return IPs;
         }
 

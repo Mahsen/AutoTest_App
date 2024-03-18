@@ -97,7 +97,7 @@
 	<div id="printable_div_id_ERR_Value">Err:0</div>
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=18"></script>
+<script type="text/javascript" src="Script/main.js?t=19"></script>
 
 <script type="text/javascript">
 <%

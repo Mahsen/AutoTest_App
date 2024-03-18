@@ -72,7 +72,7 @@ function addNew(ipAddress = null) {
     saveTabsState();
 
     // Close the modal if an IP address was provided
-    if (ipAddress !== null) {
+    if (ipAddress !== null && document.getElementById('ipInput').value) {
         Execute(ipAddress, 'AddTester', ipAddress).catch(function (response) {
             alert("Add Tester Failed");
         });
