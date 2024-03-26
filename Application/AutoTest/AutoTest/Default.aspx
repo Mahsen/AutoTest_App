@@ -5,9 +5,9 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=17"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=19"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <nav class="navbar">
@@ -25,11 +25,12 @@
         <span class="serial-text">Select your  serial of list</span>
     </div> <!-- Icon to toggle panel visibility -->    
     <h2>Serials</h2>
+    <div id="serial-sel">>>><input type="text" id="Serial_Focus" value="!Serial" onchange="SearchSerial(this.value)" /><<<</div>
     <ul id="serial-list">
         <%
             GetSerials().ForEach(serial =>
             {
-                Response.Write("<li onClick='selectSerial(this.innerHTML);'>" + serial.ToString() + "</li>");
+                Response.Write("<li id='li_" + serial.ToString() + "' onClick='selectSerial(this.innerHTML);'>" + serial.ToString() + "</li>");
             });
         %>
     </ul>
@@ -69,10 +70,15 @@
     <p>This is the Settings page content.</p>
     <br />
     <p>
+        Check test by serial
+        <div>Serial: <input type="text" id="checkserial" /><button class='lightblue' onclick="Control_OnClick_Check_Serial(document.getElementById('checkserial').value)">Check</button></div>
+    </p>
+    <br />
+    <p>
         Upload text file of serials split by newline in there to gnerate list
         <form id="Form1" method="post" runat="server" EncType="multipart/form-data" action="Default.aspx">
-         Upload to the server: <INPUT id="oFile" type="file" runat="server" NAME="oFile">
-         <asp:button id="btnUpload" type="submit" text="Upload" accept=".txt" runat="server"></asp:button>
+         Upload to the server: <INPUT id="oFile" type="file" runat="server" accept=".txt"  NAME="oFile">
+         <asp:button id="btnUpload" type="submit" text="Upload" accept=".txt" runat="server" class='lightblue'></asp:button>
          <asp:Panel ID="frmConfirmation" Visible="False" Runat="server">
             <asp:Label id="lblUploadResult" Runat="server"></asp:Label>
          </asp:Panel>
@@ -92,41 +98,64 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+<canvas id="barcode" style="display: none;"></canvas>
+	
 <div id='printable_div_id' style="display: none;">
-	<div id="printable_div_id_SN_Value">SN:0000000000</div>		
-	<div id="printable_div_id_ERR_Value">Err:0</div>
+	<img id="printable_div_id_SN_Img" style="margin-top:-25px" />
+    <!--<div id="printable_div_id_ERR_Value" style="font-size: 8px; margin-top:-8px; text-align: center;">Err:0</div>-->
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=19"></script>
+<script type="text/javascript" src="Script/main.js?t=23"></script>
 
 <script type="text/javascript">
-<%
-GetTester().ForEach(ip =>
-{
-    Response.Write("addNew('" + ip.ToString() + "');");
-});
-%>
-
-async function AJAXSubmit (oFormElement) {
-    var resultElement = oFormElement.elements.namedItem("result");
-    const formData = new FormData(oFormElement);
-
-    try {
-    const response = await fetch(oFormElement.action, {
-      method: 'POST',
-      body: formData
+    <%
+    GetTester().ForEach(ip =>
+    {
+        Response.Write("addNew('" + ip.ToString() + "');");
     });
+    %>
 
-    if (response.ok) {
-      window.location.href = '/';
+    async function AJAXSubmit (oFormElement) {
+        var resultElement = oFormElement.elements.namedItem("result");
+        const formData = new FormData(oFormElement);
+
+        try {
+        const response = await fetch(oFormElement.action, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          window.location.href = '/';
+        }
+
+        resultElement.value = 'Result: ' + response.status + ' ' + 
+          response.statusText;
+        } catch (error) {
+          console.error('Error:', error);
+        }
     }
 
-    resultElement.value = 'Result: ' + response.status + ' ' + 
-      response.statusText;
-    } catch (error) {
-      console.error('Error:', error);
+    function SearchSerial(SerialFocus) {
+        var serial_find = "";
+        var serial_list_html = document.getElementById('serial-list').innerHTML.split("<");
+        for (var i = 0; i < serial_list_html.length; i++) {
+            if (i % 2) {
+                var ser = serial_list_html[i].split(">")[1];
+                if (ser.indexOf(SerialFocus)!=-1) {
+                    serial_find = ser;
+                    break;
+                }
+            }            
+        }
+        if (serial_find!="") {
+            document.getElementById('li_' + serial_find).focus();
+            document.getElementById('Serial_Focus').value = serial_find;
+            selectSerial(serial_find);
+        }
     }
-}
+
 </script>
 </body>
 </html>

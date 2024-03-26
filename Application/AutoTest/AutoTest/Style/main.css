@@ -299,6 +299,13 @@ h1 {
     text-align: center;
 }
 
+#serial-sel {
+    text-align: center;
+    background-color: #d0d0ff;
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
 /* CSS for the list of serials */
 #serial-list {
     list-style-type: none;

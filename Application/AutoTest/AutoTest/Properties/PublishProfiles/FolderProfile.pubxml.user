@@ -5,15 +5,15 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\app.publish\</_PublishTargetUrl>
-    <History>True|2024-03-18T07:50:33.6131791Z;True|2024-03-18T11:18:50.4114356+03:30;True|2024-03-18T09:55:47.3336676+03:30;True|2024-03-18T09:54:50.8399323+03:30;True|2024-03-18T09:53:01.3723063+03:30;True|2024-03-17T14:41:38.4308192+03:30;True|2024-03-17T10:34:56.9361590+03:30;</History>
+    <History>True|2024-03-26T10:23:03.6422372Z;True|2024-03-26T13:51:52.3074251+03:30;True|2024-03-18T11:20:33.6131791+03:30;True|2024-03-18T11:18:50.4114356+03:30;True|2024-03-18T09:55:47.3336676+03:30;True|2024-03-18T09:54:50.8399323+03:30;True|2024-03-18T09:53:01.3723063+03:30;True|2024-03-17T14:41:38.4308192+03:30;True|2024-03-17T10:34:56.9361590+03:30;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/AutoTest.dll">
-      <publishTime>03/18/2024 11:20:32</publishTime>
+      <publishTime>03/26/2024 13:52:55</publishTime>
     </File>
     <File Include="bin/AutoTest.pdb">
-      <publishTime>03/18/2024 11:20:32</publishTime>
+      <publishTime>03/26/2024 13:52:55</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>08/08/2012 19:00:50</publishTime>
@@ -166,19 +166,22 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>12/13/2017 21:09:38</publishTime>
     </File>
     <File Include="DataModel.edmx.diagram">
-      <publishTime>03/16/2024 11:37:19</publishTime>
+      <publishTime>03/18/2024 11:45:20</publishTime>
+    </File>
+    <File Include="DataModel.edmx.sql">
+      <publishTime>03/18/2024 11:44:44</publishTime>
     </File>
     <File Include="Default.aspx">
-      <publishTime>03/17/2024 14:15:34</publishTime>
+      <publishTime>03/26/2024 13:39:10</publishTime>
     </File>
     <File Include="Script/main.js">
-      <publishTime>03/17/2024 14:14:43</publishTime>
+      <publishTime>03/26/2024 13:49:27</publishTime>
     </File>
     <File Include="Style/main.css">
-      <publishTime>03/16/2024 12:11:26</publishTime>
+      <publishTime>03/25/2024 14:50:24</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>03/18/2024 09:55:46</publishTime>
+      <publishTime>03/26/2024 13:53:03</publishTime>
     </File>
   </ItemGroup>
 </Project>

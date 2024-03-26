@@ -143,6 +143,7 @@ function Control_OnClick_Next(ipAddress = null) {
 
 // Function On Click Print
 function Control_OnClick_Print(ipAddress = null) {
+
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to print !');
         return;
@@ -156,15 +157,20 @@ function Control_OnClick_Print(ipAddress = null) {
         return;
     }
 
+	JsBarcode("#barcode", Serials[ipAddress]);
+	
     var printWindow = window.open('', '_blank');
-    document.getElementById('printable_div_id_SN_Value').innerHTML = "SN:" + Serials[ipAddress];
-    document.getElementById('printable_div_id_ERR_Value').innerHTML = "Err:0";
+	document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();
     var printContents = document.getElementById('printable_div_id').innerHTML;
 
     printWindow.document.write(printContents);
     printWindow.document.close();
-    printWindow.print();
-    printWindow.close();
+
+	setTimeout(() => {
+		printWindow.print();
+		printWindow.close();
+	}, 100);
+    
 }
 
 // Function On Click Save
@@ -619,7 +625,7 @@ function Add_To_Timers(ipAddress = null) {
                                 }, 200);
                             }
                             Execute(ipAddress, Command, Value).then(function (response) {
-                                if ((response.Value == "[ERR:0]") || (response.Value == null)) {
+                                if ((response.Value == "[ERR:0]") || (response.Value == null) || (response.Online==false)) {
 
                                 }
                                 else {
@@ -730,6 +736,16 @@ function clearAllCookies() {
         var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
     }
+}
+
+// Function check serial
+function Control_OnClick_Check_Serial(Serial = null) {
+    Execute("", 'CheckSerial', Serial).then(function (response) {
+        var report = response.Value.replaceAll(";", "\r\n");
+        alert("Report:\r\n" + report);
+    }).catch(function (response) {
+        alert("Check Failed");
+    });
 }
 
 // Function to save the state of the tabs in a cookie

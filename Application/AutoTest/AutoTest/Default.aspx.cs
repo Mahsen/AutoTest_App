@@ -38,7 +38,12 @@ namespace AutoTest
         {
             StructData outputdata = new StructData();
 
-            if(inputdata.Command == "SaveReport") {
+            if (inputdata.Command == "CheckSerial")
+            {
+                outputdata.Value = CheckSerial(inputdata.Value);
+                return outputdata;
+            }
+            else if (inputdata.Command == "SaveReport") {
                 outputdata.Value = SaveReport(inputdata.Serial, inputdata.Value);
                 return outputdata;
             } 
@@ -59,7 +64,7 @@ namespace AutoTest
             try
             {
                 // Set a timeout for connecting
-                int timeoutMilliseconds = 5000; 
+                int timeoutMilliseconds = 6000; 
                 IAsyncResult result = client.BeginConnect(inputdata.IP, 123, null, null);
                 // Wait for the connection to complete or timeout
                 bool success = result.AsyncWaitHandle.WaitOne(timeoutMilliseconds, true);
@@ -120,16 +125,34 @@ namespace AutoTest
             this.Load += new System.EventHandler(this.Page_Load);
         }
 
+        static String CheckSerial(String Serial)
+        {
+            try
+            {
+                Device Tester_l = DataContext.Device.Where(d => d.Serial == Serial).First();
+                return Tester_l.Report;
+            }
+            catch (Exception er)
+            {
+                return ("ERROR: " + er.Message);
+            }
+        }
+
         public List<String> GetSerials()
         {
             
             List<String> Serials = new List<String>();
-
+            try
+            {
                 DataContext.Device.ToList().ForEach(device =>
                 {
                     Serials.Add(device.Serial.ToString());
                 });
-            
+            } 
+            catch (Exception ex)
+            {
+
+            }
             return Serials;
         }
 
