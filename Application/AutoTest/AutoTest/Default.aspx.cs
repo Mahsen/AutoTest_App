@@ -119,17 +119,19 @@ namespace AutoTest
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            
             DataContext = new AutoTestEntities3();
 
             this.btnUpload.Click += new System.EventHandler(this.btnUpload_Click);
             this.Load += new System.EventHandler(this.Page_Load);
         }
 
-        static String CheckSerial(String Serial)
+        static public String CheckSerial(String Serial)
         {
             try
             {
-                Device Tester_l = DataContext.Device.Where(d => d.Serial == Serial).First();
+                AutoTestEntities3 DataContext_l = new AutoTestEntities3();
+                Device Tester_l = DataContext_l.Device.Where(d => d.Serial == Serial).First();
                 return Tester_l.Report;
             }
             catch (Exception er)

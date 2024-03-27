@@ -143,7 +143,7 @@ function Control_OnClick_Next(ipAddress = null) {
 
 // Function On Click Print
 function Control_OnClick_Print(ipAddress = null) {
-
+    /*
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to print !');
         return;
@@ -156,7 +156,11 @@ function Control_OnClick_Print(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
+    */
 
+    var printWindow = window.open("https://api.mimfa.net/qrcode?value=" + encodeURIComponent("192.168.3.24/?Serial="+Serials[ipAddress]) + "&as=value", '_blank');
+
+    /*
 	JsBarcode("#barcode", Serials[ipAddress]);
 	
     var printWindow = window.open('', '_blank');
@@ -170,7 +174,7 @@ function Control_OnClick_Print(ipAddress = null) {
 		printWindow.print();
 		printWindow.close();
 	}, 100);
-    
+    */
 }
 
 // Function On Click Save

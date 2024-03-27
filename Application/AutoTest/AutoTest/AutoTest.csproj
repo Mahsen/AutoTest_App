@@ -88,6 +88,7 @@
       <LastGenOutput>DataModel.cs</LastGenOutput>
     </Content>
     <Content Include="Default.aspx" />
+    <Content Include="Report.aspx" />
     <Content Include="Script\main.js" />
     <Content Include="Style\main.css" />
     <Content Include="Web.config" />
@@ -119,6 +120,13 @@
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report.aspx.cs">
+      <DependentUpon>Report.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Report.aspx.designer.cs">
+      <DependentUpon>Report.aspx</DependentUpon>
+    </Compile>
     <Compile Include="sp_helpdiagramdefinition_Result.cs">
       <DependentUpon>DataModel.tt</DependentUpon>
     </Compile>
