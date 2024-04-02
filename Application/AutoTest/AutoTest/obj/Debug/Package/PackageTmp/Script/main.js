@@ -143,7 +143,7 @@ function Control_OnClick_Next(ipAddress = null) {
 
 // Function On Click Print
 function Control_OnClick_Print(ipAddress = null) {
-
+    /*
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to print !');
         return;
@@ -156,21 +156,23 @@ function Control_OnClick_Print(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
+    */
 
-	JsBarcode("#barcode", Serials[ipAddress]);
-	
     var printWindow = window.open('', '_blank');
-	document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();
+    document.getElementById('printable_div_id_SN_Img').src = "https://api.qrserver.com/v1/create-qr-code/?size=300X300&data=http://" + location.href.split("/")[2] +"/Report.aspx?Serial=" + Serials[ipAddress];
+    /*
+    JsBarcode("#barcode", Serials[ipAddress]);
+    document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();
+    */
     var printContents = document.getElementById('printable_div_id').innerHTML;
 
     printWindow.document.write(printContents);
     printWindow.document.close();
 
-	setTimeout(() => {
-		printWindow.print();
-		printWindow.close();
-	}, 100);
-    
+    printWindow.onload = function () {
+        printWindow.print();
+        printWindow.close();
+    };
 }
 
 // Function On Click Save
@@ -741,8 +743,8 @@ function clearAllCookies() {
 // Function check serial
 function Control_OnClick_Check_Serial(Serial = null) {
     Execute("", 'CheckSerial', Serial).then(function (response) {
-        //response.Value.replaceAll(';', '\r\n');
-        alert("Report:\r\n" + response.Value);
+        var report = response.Value.replaceAll(";", "\r\n");
+        alert("Report:\r\n" + report);
     }).catch(function (response) {
         alert("Check Failed");
     });

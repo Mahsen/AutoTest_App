@@ -114,10 +114,6 @@ I:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\Au
 I:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CopyComplete
 I:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.dll
 I:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.pdb
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.AssemblyReference.cache
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CoreCompileInputs.cache
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.dll
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.pdb
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\AutoTest.dll.config
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\AutoTest.dll
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\AutoTest.pdb
@@ -169,8 +165,12 @@ H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\roslyn\v
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\roslyn\vbc.rsp
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\roslyn\VBCSCompiler.exe
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\roslyn\VBCSCompiler.exe.config
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CopyComplete
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\EntityFramework.dll
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\EntityFramework.xml
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.AssemblyReference.cache
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CoreCompileInputs.cache
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CopyComplete
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.dll
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.pdb
