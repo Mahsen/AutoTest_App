@@ -158,23 +158,21 @@ function Control_OnClick_Print(ipAddress = null) {
     }
     */
 
-    var printWindow = window.open("https://api.mimfa.net/qrcode?value=" + encodeURIComponent("192.168.3.24/?Serial="+Serials[ipAddress]) + "&as=value", '_blank');
-
-    /*
-	JsBarcode("#barcode", Serials[ipAddress]);
-	
     var printWindow = window.open('', '_blank');
-	document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();
+    document.getElementById('printable_div_id_SN_Img').src = "https://api.qrserver.com/v1/create-qr-code/?size=300X300&data=http://192.168.3.24/Report.aspx?Serial=" + Serials[ipAddress];
+    /*
+    JsBarcode("#barcode", Serials[ipAddress]);
+    document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();
+    */
     var printContents = document.getElementById('printable_div_id').innerHTML;
 
     printWindow.document.write(printContents);
     printWindow.document.close();
 
-	setTimeout(() => {
-		printWindow.print();
-		printWindow.close();
-	}, 100);
-    */
+    printWindow.onload = function () {
+        printWindow.print();
+        printWindow.close();
+    };
 }
 
 // Function On Click Save
