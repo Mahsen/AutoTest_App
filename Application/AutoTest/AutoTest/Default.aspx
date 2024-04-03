@@ -106,7 +106,7 @@
     <!--<div id="printable_div_id_ERR_Value" style="font-size: 8px; margin-top:-8px; text-align: center;">Err:0</div>-->
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=26"></script>
+<script type="text/javascript" src="Script/main.js?t=27"></script>
 
 <script type="text/javascript">
     <%

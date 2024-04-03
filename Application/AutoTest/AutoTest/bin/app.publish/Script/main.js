@@ -101,6 +101,7 @@ function Control_OnClick_Stop(ipAddress = null) {
         tabs_list.innerHTML = "";
         Commands[ipAddress] = 'Stop';
         Reports[ipAddress] = '';
+        Failds[ipAddress] = false;
     });
 }
 
@@ -143,7 +144,7 @@ function Control_OnClick_Next(ipAddress = null) {
 
 // Function On Click Print
 function Control_OnClick_Print(ipAddress = null) {
-    /*
+    
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to print !');
         return;
@@ -156,13 +157,16 @@ function Control_OnClick_Print(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    */
+    else if ((Reports[ipAddress].indexOf("error") == -1) && (Reports[ipAddress].indexOf("Error") == -1) && (Reports[ipAddress].indexOf("ERROR") == -1)) {
+        alert('The device has error !');
+        return;
+    }
 
-    var printWindow = window.open('', '_blank');
-    document.getElementById('printable_div_id_SN_Img').src = "https://api.qrserver.com/v1/create-qr-code/?size=300X300&data=http://" + location.href.split("/")[2] +"/Report.aspx?Serial=" + Serials[ipAddress];
-    /*
+    var printWindow = window.open('', '_blank');    
     JsBarcode("#barcode", Serials[ipAddress]);
-    document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();
+    document.getElementById('printable_div_id_SN_Img').src = document.getElementById("barcode").toDataURL();    
+    /*
+    document.getElementById('printable_div_id_SN_Img').src = "https://api.qrserver.com/v1/create-qr-code/?size=300X300&data=http://" + location.href.split("/")[2] + "/Report.aspx?Serial=" + Serials[ipAddress];
     */
     var printContents = document.getElementById('printable_div_id').innerHTML;
 
