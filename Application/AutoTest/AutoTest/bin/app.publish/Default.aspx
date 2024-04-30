@@ -90,7 +90,7 @@
         <%
         GetTester().ForEach(ip =>
         {
-            Response.Write("<div>IP : " + ip.ToString() + " <button class='lightred' onclick='Control_OnClick_Delete_Device(\"" + ip.ToString() + "\")'>Delete</button></div>");
+            Response.Write("<div>IP : " + ip.ToString() + " <button class='lightred' onclick='Control_OnClick_Delete_Device(\"" + ip.ToString() + "\")'>Delete</button><button class='lightblue' onclick='SendUpdateProgram(\"" + ip.ToString() + "\")'>Update</button></div>");
         });
         %>
     </p>
@@ -106,7 +106,7 @@
     <!--<div id="printable_div_id_ERR_Value" style="font-size: 8px; margin-top:-8px; text-align: center;">Err:0</div>-->
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=27"></script>
+<script type="text/javascript" src="Script/main.js?t=31"></script>
 
 <script type="text/javascript">
     <%
@@ -155,7 +155,12 @@
             selectSerial(serial_find);
         }
     }
-
+    function SendUpdateProgram(ipAddress) {
+        alert("Do not turn off the system until the work is finished!");
+        Execute(ipAddress, 'SendUpdateProgram', '').then(function (response) {
+            alert(response.Value);
+        });
+    }
 </script>
 </body>
 </html>

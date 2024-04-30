@@ -157,7 +157,7 @@ function Control_OnClick_Print(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    else if ((Reports[ipAddress].indexOf("error") == -1) && (Reports[ipAddress].indexOf("Error") == -1) && (Reports[ipAddress].indexOf("ERROR") == -1)) {
+    else if ((Reports[ipAddress].indexOf("error") != -1) || (Reports[ipAddress].indexOf("Error") != -1) || (Reports[ipAddress].indexOf("ERROR") != -1)) {
         alert('The device has error !');
         return;
     }
@@ -613,7 +613,7 @@ function Add_To_Timers(ipAddress = null) {
                             if (TestList[ipAddress][TestCurrent[ipAddress]].indexOf('(') != -1) {
                                 var Command = TestList[ipAddress][TestCurrent[ipAddress]].split('(')[0];
                                 var Value = TestList[ipAddress][TestCurrent[ipAddress]].split('(')[1].split(')')[0];
-                                Value = Value.replace('#FileName', 'SAA_766_01_0207_02_v1_14021223');
+                                Value = Value.replace('#FileName', 'ProgramFile');
                                 Value = Value.replace('#Domain', '94.139.169.122:8000');
                                 Value = Value.replace('#Serial', Serials[ipAddress]);
                                 let today = new Date().toLocaleDateString('fa-IR').replaceAll('/', '-').replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));

@@ -56,6 +56,11 @@ namespace AutoTest
                 outputdata.Value = RemoveTester(inputdata.Value);
                 return outputdata;
             }
+            else if (inputdata.Command == "SendUpdateProgram")
+            {
+                outputdata.Value = SendUpdateProgram(inputdata);
+                return outputdata;
+            }
 
             // Create a new TcpClient
             System.Net.Sockets.TcpClient client = new System.Net.Sockets.TcpClient();
@@ -232,6 +237,41 @@ namespace AutoTest
             {
                 DataContext.Device.Where(x => x.Serial == Serial).ToList().ForEach(w => w.Report = Report);
                 DataContext.SaveChanges();
+                return "OK";
+            }
+            catch (Exception er)
+            {
+                return ("ERROR: " + er.Message);
+            }
+        }
+
+        static String SendUpdateProgram(StructData Data)
+        {
+            String filename = Data.Value;
+            byte[] bytes = new byte[512];
+            int Offset = 0;       
+            filename = AppDomain.CurrentDomain.BaseDirectory + "DirectProgram.bin";
+            try
+            {
+                Data.Command = "UpdateProgram";
+                using (FileStream read = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                {
+                    while (read.Read(bytes, 0, 256) != 0)
+                    {
+                        StringBuilder line = new StringBuilder();
+                        line.Append(Offset + "-");
+                        line.Append(256 + ":");
+                        line.Append(string.Join("", bytes.Select(b => b.ToString("x2"))));
+                        Offset += 256;
+                        Data.Value = line.ToString();
+
+                        if (Execute(Data).Value != "OK")
+                        {
+                            return "Fail";
+                        }
+                    }
+                }
+
                 return "OK";
             }
             catch (Exception er)
