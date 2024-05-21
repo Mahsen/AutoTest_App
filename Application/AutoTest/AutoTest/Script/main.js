@@ -694,7 +694,7 @@ function Remove_of_Timers(ipAddress = null) {
 
 // Function to validate an IP address
 function validateIP(ipAddress) {
-    var ipRegex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
+    var ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):(6553[0-5]|655[0-2][0-9]|65[0-4][0-9][0-9]|6[0-4][0-9][0-9][0-9][0-9]|[1-5](\d){4}|[1-9](\d){0,3})$/;
     return ipRegex.test(ipAddress);
 }
 

@@ -70,7 +70,7 @@ namespace AutoTest
             {
                 // Set a timeout for connecting
                 int timeoutMilliseconds = 6000; 
-                IAsyncResult result = client.BeginConnect(inputdata.IP, 123, null, null);
+                IAsyncResult result = client.BeginConnect(inputdata.IP.Split(':')[0], int.Parse(inputdata.IP.Split(':')[1]), null, null);
                 // Wait for the connection to complete or timeout
                 bool success = result.AsyncWaitHandle.WaitOne(timeoutMilliseconds, true);
 
@@ -200,8 +200,8 @@ namespace AutoTest
                 NumberOfTester++;
                 
                 Tester_l.ID = NumberOfTester;
-                Tester_l.IP = ip;
-                Tester_l.Port = 123;
+                Tester_l.IP = ip.Split(':')[0];
+                Tester_l.Port = int.Parse(ip.Split(':')[1]);
                 Tester_l.Name = "Tester-"+(NumberOfTester).ToString();
                 DataContext.Tester.Add(Tester_l);
                 DataContext.SaveChanges();
@@ -221,7 +221,7 @@ namespace AutoTest
 
                 DataContext.Tester.ToList().ForEach(device =>
                 {
-                    IPs.Add(device.IP.ToString());
+                    IPs.Add(device.IP.ToString()+":"+device.Port.ToString());
                 });
             }
             catch(Exception er)
