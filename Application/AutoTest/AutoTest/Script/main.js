@@ -606,7 +606,7 @@ function Add_To_Timers(ipAddress = null) {
                             Reports[ipAddress] += tabs_list.getElementsByTagName("li")[i].innerHTML + ";";
                         }
                         Control_OnClick_Save(ipAddress);
-                        Control_OnClick_Print(ipAddress);
+                        //Control_OnClick_Print(ipAddress);
                     }
                     else {
                         if (tabs_list.getElementsByTagName("input")[TestCurrent[ipAddress]].checked) {
@@ -711,10 +711,13 @@ function showPage(ipAddress) {
     var page = TabsBody[ipAddress];
     if (page) {        
         page.style.display = 'block';
+        if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+            togglePanel();
+        }
     }
     else {
         try {
-            document.getElementById('page-' + ipAddress).style.display = 'block';
+            document.getElementById('page-' + ipAddress).style.display = 'block';            
         } catch (er) { }
     }
 }
