@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=19"/>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=23"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -90,7 +90,7 @@
         <%
         GetTester().ForEach(ip =>
         {
-            Response.Write("<div>IP : " + ip.ToString() + " <button class='lightred' onclick='Control_OnClick_Delete_Device(\"" + ip.ToString() + "\")'>Delete</button><button class='lightblue' onclick='SendUpdateProgram(\"" + ip.ToString() + "\")'>Update</button></div>");
+            Response.Write("<div>IP : " + ip.ToString() + " <button class='lightred' onclick='Control_OnClick_Delete_Device(\"" + ip.ToString() + "\")'>Delete</button><!--<button class='lightblue' onclick='SendUpdateProgram(\"" + ip.ToString() + "\")'>Update</button>--></div>");
         });
         %>
     </p>
@@ -106,7 +106,7 @@
     <!--<div id="printable_div_id_ERR_Value" style="font-size: 8px; margin-top:-8px; text-align: center;">Err:0</div>-->
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=31"></script>
+<script type="text/javascript" src="Script/main.js?t=38"></script>
 
 <script type="text/javascript">
     <%
@@ -162,5 +162,6 @@
         });
     }
 </script>
+<div class="footer" style="background-color: #333; color: #fff;"> v1.14030305</div>
 </body>
 </html>

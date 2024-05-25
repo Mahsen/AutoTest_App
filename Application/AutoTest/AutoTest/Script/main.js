@@ -2,6 +2,8 @@
 var Default_Refresh_Tasks = 1000;
 // IPs
 const IPs = [];
+// Same IPs
+const SameIPs = [];
 // Object to store timers
 var Timers = {};
 // Object to store timers Blink
@@ -84,8 +86,17 @@ function addNew(ipAddress = null) {
 }
 
 // Function On Click Stop
-function Control_OnClick_Stop(ipAddress = null) {    
-    if (!Onlines[ipAddress]) {
+function Control_OnClick_Stop(ipAddress = null) {  
+    if (ipAddress.indexOf(":") == -1) {
+        for (var Index = 1001; Index <= 1004; Index++) {
+            Control_OnClick_Stop(ipAddress + ":" + Index);
+        }
+        return;
+    }
+    if (Commands[ipAddress] == 'Stop') {
+        return;
+    }
+    else if (!Onlines[ipAddress]) {
         alert('The device is offline !');
         return;
     }
@@ -107,6 +118,12 @@ function Control_OnClick_Stop(ipAddress = null) {
 
 // Function On Click Play
 function Control_OnClick_Play(ipAddress = null) {
+    if (ipAddress.indexOf(":") == -1) {
+        for (var Index = 1001; Index <= 1004; Index++) {
+            Control_OnClick_Play(ipAddress + ":" + Index);
+        }
+        return;
+    }
     if (Commands[ipAddress] == 'Play') {
         return;
     }
@@ -143,8 +160,13 @@ function Control_OnClick_Next(ipAddress = null) {
 }
 
 // Function On Click Print
-function Control_OnClick_Print(ipAddress = null) {
-    
+function Control_OnClick_Print(ipAddress = null) {    
+    if (ipAddress.indexOf(":") == -1) {
+        for (var Index = 1001; Index <= 1004; Index++) {
+            Control_OnClick_Print(ipAddress + ":" + Index);
+        }
+        return;
+    }
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to print !');
         return;
@@ -181,6 +203,12 @@ function Control_OnClick_Print(ipAddress = null) {
 
 // Function On Click Save
 function Control_OnClick_Save(ipAddress = null) {
+    if (ipAddress.indexOf(":") == -1) {
+        for (var Index = 1001; Index <= 1004; Index++) {
+            Control_OnClick_Save(ipAddress + ":" + Index);
+        }
+        return;
+    }
     if (Commands[ipAddress] != 'Pause') {
         alert('The device is not ready to save !');
         return;
@@ -194,7 +222,7 @@ function Control_OnClick_Save(ipAddress = null) {
         return;
     }
     Execute(ipAddress, 'SaveReport', Reports[ipAddress]).catch(function (response) {
-        alert("Save report Failed");
+        alert("Save report Failed : " + response);
     });   
 }
 
@@ -202,13 +230,13 @@ function Control_OnClick_Save(ipAddress = null) {
 function Control_OnClick_Delete_Device(ipAddress = null) {
     Execute(ipAddress, 'RemoveTester', ipAddress).then(function (response) {
         if (response.Value.indexOf("ERROR") != -1) {
-            alert("Remove Tester Failed");
+            alert("Remove Tester Failed : " + response.Value);
         }
         else {
             location.reload();
         }        
     }).catch(function (response) {
-        alert("Remove Tester Failed");
+        alert("Remove Tester Failed : " + response);
     });
 }
 
@@ -217,17 +245,18 @@ function Add_Control_To(ipAddress, obj) {
     
     // Play icon
     var playIcon = document.createElement('a');
-    playIcon.href = '#';
+    //playIcon.href = '#';
     playIcon.style.color = '#401040';
     playIcon.style.padding = '10px';
     playIcon.setAttribute('title', 'Play');
+    playIcon.setAttribute('cursor', 'pointer');
     playIcon.classList.add('fas', 'fa-play');
     obj.appendChild(playIcon);
     playIcon.addEventListener('click', function () { Control_OnClick_Play(ipAddress); });
 
     // Stop icon
     var stopIcon = document.createElement('a');
-    stopIcon.href = '#';
+    //stopIcon.href = '#';
     stopIcon.style.color = '#401040';
     stopIcon.style.padding = '10px';
     stopIcon.setAttribute('title', 'Stop');
@@ -235,19 +264,21 @@ function Add_Control_To(ipAddress, obj) {
     obj.appendChild(stopIcon);
     stopIcon.addEventListener('click', function () { Control_OnClick_Stop(ipAddress); });
 
-    // Next icon
-    var nextIcon = document.createElement('a');
-    nextIcon.href = '#';
-    nextIcon.style.color = '#401040';
-    nextIcon.style.padding = '10px';
-    nextIcon.setAttribute('title', 'Next');
-    nextIcon.classList.add('fas', 'fa-forward');
-    obj.appendChild(nextIcon);
-    nextIcon.addEventListener('click', function () { Control_OnClick_Next(ipAddress); });
+    if (ipAddress.indexOf(":") != -1) {
+        // Next icon
+        var nextIcon = document.createElement('a');
+        //nextIcon.href = '#';
+        nextIcon.style.color = '#401040';
+        nextIcon.style.padding = '10px';
+        nextIcon.setAttribute('title', 'Next');
+        nextIcon.classList.add('fas', 'fa-forward');
+        obj.appendChild(nextIcon);
+        nextIcon.addEventListener('click', function () { Control_OnClick_Next(ipAddress); });
+    }
 
     // Print icon
     var printIcon = document.createElement('a');
-    printIcon.href = '#';
+    //printIcon.href = '#';
     printIcon.style.color = '#401040';
     printIcon.style.padding = '10px';
     printIcon.setAttribute('title', 'Print');
@@ -257,7 +288,7 @@ function Add_Control_To(ipAddress, obj) {
 
     // Save icon
     var saveIcon = document.createElement('a');
-    saveIcon.href = '#';
+    //saveIcon.href = '#';
     saveIcon.style.color = '#401040';
     saveIcon.style.padding = '10px';
     saveIcon.setAttribute('title', 'Save');
@@ -269,6 +300,9 @@ function Add_Control_To(ipAddress, obj) {
 
 // Function to add a new to Tab
 function Add_To_Tab(ipAddress = null) {
+
+
+
     // Create a new list item for the tab
     Tabs[ipAddress] = document.createElement('li');
     var newTabLink = document.createElement('a');
@@ -280,8 +314,9 @@ function Add_To_Tab(ipAddress = null) {
     statusCircle.id = 'status';
     statusCircle.classList.add('status-circle');
     newTabLink.appendChild(statusCircle);
-
     Tabs[ipAddress].appendChild(newTabLink);
+
+
 
     /*
     var removeCircle = document.createElement('a');
@@ -308,7 +343,7 @@ function Add_To_Tab(ipAddress = null) {
 
     // IP address wrapper with different color
     var ipWrapper = document.createElement('div');
-    ipWrapper.id = 'ip';
+    ipWrapper.id = 'ip';    
     ipWrapper.classList.add('ip-wrapper');
     ipWrapper.textContent = 'Device IP : ' + ipAddress;
     TabsBody[ipAddress].appendChild(ipWrapper);
@@ -424,11 +459,154 @@ function Add_To_Dashboard(ipAddress = null) {
     progressBar.style.width = 0 + '%';
     progressBar.innerHTML = '';
 
+
+    Add_Table_Of_Dashboard(ipAddress);
+
+    /*
     // Append the progress container to the dashboard page
     var dashboardPage = document.getElementById('page-dashboard');
     dashboardPage.appendChild(ProgressOfDashboard[ipAddress]);
+    */
 
     console.log('Add_To_Dashboard(' + ipAddress + ')');
+}
+
+/*
+ function Add_Table_Of_Dashboard(ipAddress = null) {
+
+    if (SameIPs[ipAddress.split(":")[0]]) {
+        SameIPs[ipAddress.split(":")[0]]++;
+    }
+    else {
+        SameIPs[ipAddress.split(":")[0]] = 1;
+
+        //body reference 
+        var dashboardPage = document.getElementById('page-dashboard');
+
+        // create elements <table> and a <tbody>
+        var tbl = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+
+        // cells creation
+        for (var j = 0; j < 3; j++) {
+            // table row creation
+            var row = document.createElement("tr");
+           
+            for (var i = 0; i < 2; i++) {
+                // create element <td> and text node 
+                //Make text node the contents of <td> element
+                // put <td> at end of the table row
+                var cell = document.createElement("td");   
+                //cell.setAttribute("width", "800px");
+                if (j == 0) {
+                    cell.id = "table_" + ipAddress.split(":")[0];
+                }
+                else {
+                    cell.id = "table_" + ipAddress.split(":")[0] + ":" + (1000 + (((j * 2) + i) - 1));
+                }
+
+                row.appendChild(cell);
+
+                if (j == 0) {
+                    //var cellText = document.createTextNode(ipAddress.split(":")[0]);
+                    //cell.appendChild(cellText);
+                    Add_Control_To(ipAddress.split(":")[0], cell);
+                    cell.setAttribute("colspan", "2");
+                    cell.setAttribute('align', 'center');
+                    cell.classList.add('lightgray');
+                    cell.style.borderRadius = "10px";
+                    break;
+                }
+            }
+            
+            //row added to end of table body
+            tblBody.appendChild(row);
+        }
+
+        // append the <tbody> inside the <table>
+        tbl.appendChild(tblBody);
+        // put <table> in the <body>
+        dashboardPage.appendChild(tbl);
+        // tbl border attribute to 
+        //tbl.setAttribute("border", "1");
+    }
+
+    var Table = document.getElementById("table_" + ipAddress);
+    Table.appendChild(ProgressOfDashboard[ipAddress]);
+
+    //alert(document.getElementById("table_" + ipAddress).innerHTML);
+    //Table.appendChild(ProgressOfDashboard[ipAddress]);
+
+    //alert(SameIPs[ipAddress.split(":")[0]]);
+}
+*/
+
+function Add_Table_Of_Dashboard(ipAddress = null) {
+
+    if (SameIPs[ipAddress.split(":")[0]]) {
+        SameIPs[ipAddress.split(":")[0]]++;
+    }
+    else {
+        SameIPs[ipAddress.split(":")[0]] = 1;
+
+        //body reference 
+        var dashboardPage = document.getElementById('page-dashboard');
+
+        // create elements <table> and a <tbody>
+        var tbl = document.createElement("table");
+        var tblBody = document.createElement("tbody");
+
+        // cells creation
+        for (var j = 0; j < 2; j++) {
+            // table row creation
+            var row = document.createElement("tr");
+           
+            for (var i = 0; i < 4; i++) {
+                // create element <td> and text node 
+                //Make text node the contents of <td> element
+                // put <td> at end of the table row
+                var cell = document.createElement("td");   
+                //cell.setAttribute("width", "800px");
+                if (j == 0) {
+                    cell.id = "table_" + ipAddress.split(":")[0];
+                }
+                else {
+                    cell.id = "table_" + ipAddress.split(":")[0] + ":" + (1000 + (((j * 2) + i) - 1));
+                }
+
+                row.appendChild(cell);
+
+                if (j == 0) {
+                    //var cellText = document.createTextNode(ipAddress.split(":")[0]);
+                    //cell.appendChild(cellText);
+                    Add_Control_To(ipAddress.split(":")[0], cell);
+                    cell.setAttribute("colspan", "4");
+                    cell.setAttribute('align', 'center');
+                    cell.classList.add('lightgray');
+                    cell.style.borderRadius = "10px";
+                    break;
+                }
+            }
+            
+            //row added to end of table body
+            tblBody.appendChild(row);
+        }
+
+        // append the <tbody> inside the <table>
+        tbl.appendChild(tblBody);
+        // put <table> in the <body>
+        dashboardPage.appendChild(tbl);
+        // tbl border attribute to 
+        //tbl.setAttribute("border", "1");
+    }
+
+    var Table = document.getElementById("table_" + ipAddress);
+    Table.appendChild(ProgressOfDashboard[ipAddress]);
+
+    //alert(document.getElementById("table_" + ipAddress).innerHTML);
+    //Table.appendChild(ProgressOfDashboard[ipAddress]);
+
+    //alert(SameIPs[ipAddress.split(":")[0]]);
 }
 
 // Function to remove of Dashboard
@@ -626,8 +804,8 @@ function Add_To_Timers(ipAddress = null) {
                             //alert("Command=" + Command + " Value=" + Value);
                             if (!Timers_Blink[ipAddress]) {
                                 Timers_Blink[ipAddress] = setInterval(() => {
-                                    tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
-                                    dashboard_ip.classList.toggle('lightblue');
+                                    //tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
+                                    //dashboard_ip.classList.toggle('lightblue');
                                 }, 200);
                             }
                             Execute(ipAddress, Command, Value).then(function (response) {

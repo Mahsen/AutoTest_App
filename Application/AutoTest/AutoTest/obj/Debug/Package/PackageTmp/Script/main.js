@@ -194,7 +194,7 @@ function Control_OnClick_Save(ipAddress = null) {
         return;
     }
     Execute(ipAddress, 'SaveReport', Reports[ipAddress]).catch(function (response) {
-        alert("Save report Failed");
+        alert("Save report Failed : " + response);
     });   
 }
 
@@ -202,13 +202,13 @@ function Control_OnClick_Save(ipAddress = null) {
 function Control_OnClick_Delete_Device(ipAddress = null) {
     Execute(ipAddress, 'RemoveTester', ipAddress).then(function (response) {
         if (response.Value.indexOf("ERROR") != -1) {
-            alert("Remove Tester Failed");
+            alert("Remove Tester Failed : " + response.Value);
         }
         else {
             location.reload();
         }        
     }).catch(function (response) {
-        alert("Remove Tester Failed");
+        alert("Remove Tester Failed : " + response);
     });
 }
 
@@ -606,7 +606,7 @@ function Add_To_Timers(ipAddress = null) {
                             Reports[ipAddress] += tabs_list.getElementsByTagName("li")[i].innerHTML + ";";
                         }
                         Control_OnClick_Save(ipAddress);
-                        Control_OnClick_Print(ipAddress);
+                        //Control_OnClick_Print(ipAddress);
                     }
                     else {
                         if (tabs_list.getElementsByTagName("input")[TestCurrent[ipAddress]].checked) {
@@ -694,7 +694,7 @@ function Remove_of_Timers(ipAddress = null) {
 
 // Function to validate an IP address
 function validateIP(ipAddress) {
-    var ipRegex = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/;
+    var ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):(6553[0-5]|655[0-2][0-9]|65[0-4][0-9][0-9]|6[0-4][0-9][0-9][0-9][0-9]|[1-5](\d){4}|[1-9](\d){0,3})$/;
     return ipRegex.test(ipAddress);
 }
 
@@ -711,10 +711,13 @@ function showPage(ipAddress) {
     var page = TabsBody[ipAddress];
     if (page) {        
         page.style.display = 'block';
+        if (Serials[ipAddress].indexOf('Not.Select') != -1) {
+            togglePanel();
+        }
     }
     else {
         try {
-            document.getElementById('page-' + ipAddress).style.display = 'block';
+            document.getElementById('page-' + ipAddress).style.display = 'block';            
         } catch (er) { }
     }
 }
