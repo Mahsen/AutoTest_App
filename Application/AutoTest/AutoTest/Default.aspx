@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=19"/>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=23"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -162,5 +162,6 @@
         });
     }
 </script>
+<div class="footer" style="background-color: #333; color: #fff;"> v1.14030305</div>
 </body>
 </html>

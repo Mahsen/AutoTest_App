@@ -281,6 +281,7 @@ h1 {
     right: -300px; /* Initially position off-screen */
     width: 300px; /* Adjust width as needed */
     height: 100%;
+    z-index: 100;
     background-color: #fff;
     padding: 20px;
     border-left: 1px solid #ccc;
@@ -347,3 +348,10 @@ h1 {
     writing-mode: vertical-lr; /* Rotate text vertically */
     text-orientation: mixed; /* Ensure text orientation is mixed */
 }
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
