@@ -31,6 +31,7 @@ namespace AutoTest
             public string Command { get; set; }
             public string Value { get; set; }
             public bool Online { get; set; }
+            public int TimeOut { get; set; }
         }
 
         [WebMethod]
@@ -69,7 +70,7 @@ namespace AutoTest
             try
             {
                 // Set a timeout for connecting
-                int timeoutMilliseconds = 6000; 
+                int timeoutMilliseconds = inputdata.TimeOut; 
                 IAsyncResult result = client.BeginConnect(inputdata.IP.Split(':')[0], int.Parse(inputdata.IP.Split(':')[1]), null, null);
                 // Wait for the connection to complete or timeout
                 bool success = result.AsyncWaitHandle.WaitOne(timeoutMilliseconds, true);
@@ -85,7 +86,7 @@ namespace AutoTest
                     byte[] messageBytes = Encoding.ASCII.GetBytes("<AUTOTEST:" + inputdata.Command + ">" + inputdata.Value+ "</AUTOTEST>\r\n");
                     stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
 
-                    for(int TimeOut=0; ((TimeOut<5) && (!stream.DataAvailable)); TimeOut++)
+                    for(int TimeOut=0; ((TimeOut<(inputdata.TimeOut/1000)) && (!stream.DataAvailable)); TimeOut++)
                     {
                         Thread.Sleep(1000);
                     }
@@ -167,7 +168,10 @@ namespace AutoTest
         {
             try
             {
-                Tester Tester_l = DataContext.Tester.Where(tester => tester.IP == ip).First();
+                String IP = ip.Split(':')[0];
+                int Port = int.Parse(ip.Split(':')[1]);
+                
+                Tester Tester_l = DataContext.Tester.Where(tester => tester.IP == IP && tester.Port == Port).First();
                 DataContext.Tester.Remove(Tester_l);
                 DataContext.SaveChanges();
                 return "OK";

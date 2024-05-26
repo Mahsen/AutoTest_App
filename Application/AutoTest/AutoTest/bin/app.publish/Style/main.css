@@ -80,9 +80,9 @@ i {
 }
 
 .container {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
+    max-width: 1200px;
+    margin: 10px auto;
+    padding: 10px;
     background-color: #fff;
     border-radius: 0 0 8px 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -100,13 +100,18 @@ h1 {
 
 .multi-tabs {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     list-style-type: none;
     padding: 0;
     margin: 0;
+    width: 1200px;
 }
 
 .multi-tabs li {
     margin-right: 10px; /* Adjust margin between tabs */
+    width:200px;
+    margin-top: 20px;
 }
 
 .multi-tabs li:last-child {
@@ -185,9 +190,10 @@ h1 {
 
 .ip-wrapper {
     background-color: lightblue;
-    padding: 5px;
+    padding: 1px;
     font-weight: bold;
     border-radius: 10px;
+    width:200px;
     text-align: center;
     margin: 0 auto;
     cursor: pointer;
@@ -266,7 +272,6 @@ h1 {
 }
 
 .box {
-    width: 30%; /* Adjust as needed */
     display: inline-block; /* or float: left; */
     margin: 10px;
     background-color: #f0f0f0;

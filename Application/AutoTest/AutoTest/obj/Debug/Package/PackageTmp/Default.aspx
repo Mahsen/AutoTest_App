@@ -5,7 +5,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>SAA Cloud Software for Automated Testing</title>
-    <link rel="stylesheet" type="text/css" href="Style/main.css?t=23"/>
+    <link rel="stylesheet" type="text/css" href="Style/main.css?t=25"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
@@ -41,6 +41,7 @@
 <nav class="bottom-menu">
     <ul class="multi-tabs">
         <li><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+
     </ul>
     <div class="add-member"><a href="#" onclick="openModal()"> <i class="fas fa-plus"></i></a></div>
 </nav>
@@ -59,8 +60,7 @@
 <!-- Dashboard page -->
 <div class="container" id="page-dashboard">
     <!-- Content for Dashboard page -->
-    <h1>Dashboard</h1>
-    <p>Current hardware being tested :</p>
+    <div><h1>Dashboard</h1><h4>Current hardware being tested :</h4></div>
 </div>
 
 <!-- Settings page -->
@@ -106,7 +106,7 @@
     <!--<div id="printable_div_id_ERR_Value" style="font-size: 8px; margin-top:-8px; text-align: center;">Err:0</div>-->
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=38"></script>
+<script type="text/javascript" src="Script/main.js?t=41"></script>
 
 <script type="text/javascript">
     <%

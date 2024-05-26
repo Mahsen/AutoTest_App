@@ -5,15 +5,15 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\app.publish\</_PublishTargetUrl>
-    <History>True|2024-05-25T05:31:58.8466177Z;True|2024-05-25T09:00:59.0156117+03:30;True|2024-05-25T08:52:00.0607896+03:30;True|2024-05-25T08:32:38.5047677+03:30;True|2024-04-30T13:10:39.5642304+03:30;True|2024-04-30T13:08:57.0980830+03:30;True|2024-04-30T13:06:49.3182145+03:30;True|2024-04-30T13:02:57.3035938+03:30;True|2024-04-03T09:17:44.7615353+03:30;True|2024-04-02T14:45:21.8251963+03:30;True|2024-04-02T13:07:19.1249887+03:30;True|2024-04-02T13:06:54.3170125+03:30;True|2024-04-02T13:03:19.2366635+03:30;True|2024-03-26T13:53:03.6422372+03:30;True|2024-03-26T13:51:52.3074251+03:30;True|2024-03-18T11:20:33.6131791+03:30;True|2024-03-18T11:18:50.4114356+03:30;True|2024-03-18T09:55:47.3336676+03:30;True|2024-03-18T09:54:50.8399323+03:30;True|2024-03-18T09:53:01.3723063+03:30;True|2024-03-17T14:41:38.4308192+03:30;True|2024-03-17T10:34:56.9361590+03:30;</History>
+    <History>True|2024-05-25T10:55:50.2528479Z;True|2024-05-25T09:01:58.8466177+03:30;True|2024-05-25T09:00:59.0156117+03:30;True|2024-05-25T08:52:00.0607896+03:30;True|2024-05-25T08:32:38.5047677+03:30;True|2024-04-30T13:10:39.5642304+03:30;True|2024-04-30T13:08:57.0980830+03:30;True|2024-04-30T13:06:49.3182145+03:30;True|2024-04-30T13:02:57.3035938+03:30;True|2024-04-03T09:17:44.7615353+03:30;True|2024-04-02T14:45:21.8251963+03:30;True|2024-04-02T13:07:19.1249887+03:30;True|2024-04-02T13:06:54.3170125+03:30;True|2024-04-02T13:03:19.2366635+03:30;True|2024-03-26T13:53:03.6422372+03:30;True|2024-03-26T13:51:52.3074251+03:30;True|2024-03-18T11:20:33.6131791+03:30;True|2024-03-18T11:18:50.4114356+03:30;True|2024-03-18T09:55:47.3336676+03:30;True|2024-03-18T09:54:50.8399323+03:30;True|2024-03-18T09:53:01.3723063+03:30;True|2024-03-17T14:41:38.4308192+03:30;True|2024-03-17T10:34:56.9361590+03:30;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/AutoTest.dll">
-      <publishTime>05/25/2024 09:00:58</publishTime>
+      <publishTime>05/25/2024 13:59:49</publishTime>
     </File>
     <File Include="bin/AutoTest.pdb">
-      <publishTime>05/25/2024 09:00:58</publishTime>
+      <publishTime>05/25/2024 13:59:49</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>08/08/2012 19:00:50</publishTime>
@@ -172,16 +172,16 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>03/18/2024 11:44:44</publishTime>
     </File>
     <File Include="Default.aspx">
-      <publishTime>05/25/2024 08:54:50</publishTime>
+      <publishTime>05/25/2024 14:10:06</publishTime>
     </File>
     <File Include="Report.aspx">
       <publishTime>04/02/2024 13:06:46</publishTime>
     </File>
     <File Include="Script/main.js">
-      <publishTime>05/25/2024 08:54:42</publishTime>
+      <publishTime>05/25/2024 14:09:39</publishTime>
     </File>
     <File Include="Style/main.css">
-      <publishTime>05/25/2024 08:30:43</publishTime>
+      <publishTime>05/25/2024 13:13:13</publishTime>
     </File>
     <File Include="Web.config">
       <publishTime>05/25/2024 08:32:38</publishTime>
