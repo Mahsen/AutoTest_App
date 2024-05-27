@@ -1,5 +1,5 @@
 ﻿// Default parameters
-var Default_Refresh_Tasks = 1000;
+var Default_Refresh_Tasks = 1200;
 // IPs
 const IPs = [];
 // Same IPs
@@ -75,7 +75,7 @@ function addNew(ipAddress = null) {
 
     // Close the modal if an IP address was provided
     if (ipAddress !== null && document.getElementById('ipInput').value) {
-        Execute(ipAddress, 'AddTester', ipAddress).catch(function (response) {
+        Execute(ipAddress, 'AddTester', ipAddress, 10000).catch(function (response) {
             alert("Add Tester Failed");
         });
         closeModal();
@@ -103,11 +103,11 @@ function Control_OnClick_Stop(ipAddress = null) {
     else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
         alert('Please select serial of list serials on right side !');
         return;
-    } 
+    }
     if (Timers_Blink[ipAddress]) {
         clearInterval(Timers_Blink[ipAddress]);
     }
-    Execute(ipAddress, 'Stop', '').then(function (response) {
+    Execute(ipAddress, 'Stop', '', 10000).then(function (response) {
         var tabs_list = TabsBody[ipAddress].querySelector('#list');
         tabs_list.innerHTML = "";
         Commands[ipAddress] = 'Stop';
@@ -134,8 +134,8 @@ function Control_OnClick_Play(ipAddress = null) {
     else if (Serials[ipAddress].indexOf('Not.Select') != -1) {
         alert('Please select serial of list serials on right side !');
         return;
-    }    
-    Execute(ipAddress, 'Play', '').then(function (response) {
+    }
+    Execute(ipAddress, 'Play', '', 10000).then(function (response) {
         Commands[ipAddress] = 'Play';
     });
 }
@@ -153,7 +153,7 @@ function Control_OnClick_Next(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     } 
-    Execute(ipAddress, 'Play', '').then(function (response) {
+    Execute(ipAddress, 'Play', '', 10000).then(function (response) {
         TestCurrent[ipAddress]++;
         Commands[ipAddress] = 'Play';
     });
@@ -221,14 +221,14 @@ function Control_OnClick_Save(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    Execute(ipAddress, 'SaveReport', Reports[ipAddress]).catch(function (response) {
+    Execute(ipAddress, 'SaveReport', Reports[ipAddress], 10000).catch(function (response) {
         alert("Save report Failed : " + response);
     });   
 }
 
 // Function On Click Delete device
 function Control_OnClick_Delete_Device(ipAddress = null) {
-    Execute(ipAddress, 'RemoveTester', ipAddress).then(function (response) {
+    Execute(ipAddress, 'RemoveTester', ipAddress, 10000).then(function (response) {
         if (response.Value.indexOf("ERROR") != -1) {
             alert("Remove Tester Failed : " + response.Value);
         }
@@ -619,9 +619,43 @@ function Remove_of_Dashboard(ipAddress = null) {
 // Function to add a new to Timers
 var t = 0;
 function Handle_Timers_Fault(ipAddress = null) {
+
+    //alert(ipAddress);
+    /*
     var tabs_status = Tabs[ipAddress].querySelector('#status');
     var tabs_list = TabsBody[ipAddress].querySelector('#list');
     var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
+    var tabs_state = TabsBody[ipAddress].querySelector('#state');
+    var tabs_task = TabsBody[ipAddress].querySelector('#task');
+
+    Commands[ipAddress] = 'Stop';
+    tabs_list.innerHTML = "";
+    Onlines[ipAddress] = false;
+    tabs_task.textContent = dashboard_task.textContent = 'Task : Stoped';
+    dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
+    dashboard_state.style.color = tabs_state.style.color = "red";
+    setTimeout(() => { Add_To_Timers(ipAddress); }, 2000);
+    */
+
+    
+    var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
+    var tabs_state = TabsBody[ipAddress].querySelector('#state');
+    dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
+    dashboard_state.style.color = tabs_state.style.color = "red";
+    Commands[ipAddress] = 'Pause'
+    var tabs_task = TabsBody[ipAddress].querySelector('#task');
+    var dashboard_task = ProgressOfDashboard[ipAddress].querySelector('#task');
+    tabs_task.textContent = dashboard_task.textContent = 'Task : Pause';
+    var tabs_list = TabsBody[ipAddress].querySelector('#list');
+    tabs_list.innerHTML = "";
+    var tabs_status = Tabs[ipAddress].querySelector('#status');
+    if (tabs_status.classList.contains('lightblue')) {
+        tabs_status.classList.remove('lightblue');
+    }
+    setTimeout(() => { Add_To_Timers(ipAddress); }, 10000);
+    return true;
+
+    /*
     TryError++;
     if (Commands[ipAddress] != 'Play' || TryError >= 40) {
         tabs_list.innerHTML = "";
@@ -640,6 +674,7 @@ function Handle_Timers_Fault(ipAddress = null) {
         setTimeout(() => { Add_To_Timers(ipAddress); }, 2000);
         return true;
     }
+    */
 }
 // Function to add a new to Timers
 var t = 0;
@@ -665,11 +700,11 @@ function Add_To_Timers(ipAddress = null) {
             dashboard_serial.style.color = tabs_serial.style.color = "red";
         }
 
-        Execute(ipAddress, 'Link', '').then(function (response) {
+        Execute(ipAddress, 'Link', '', 10000).then(function (response) {
             if (response.Online) {
                 document.getElementsByTagName("p")
                 if (tabs_list.innerHTML == "") {
-                    Execute(ipAddress, 'List', '').then(function (response) {
+                    Execute(ipAddress, 'List', '', 10000).then(function (response) {
                         if (tabs_list.innerHTML == "") {
                             TestList[ipAddress] = response.Value.split(',');
                             TestList[ipAddress].length--;
@@ -804,11 +839,11 @@ function Add_To_Timers(ipAddress = null) {
                             //alert("Command=" + Command + " Value=" + Value);
                             if (!Timers_Blink[ipAddress]) {
                                 Timers_Blink[ipAddress] = setInterval(() => {
-                                    //tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
+                                    tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
                                     //dashboard_ip.classList.toggle('lightblue');
                                 }, 200);
                             }
-                            Execute(ipAddress, Command, Value).then(function (response) {
+                            Execute(ipAddress, Command, Value, 120000).then(function (response) {
                                 if ((response.Value == "[ERR:0]") || (response.Value == null) || (response.Online==false)) {
 
                                 }
@@ -817,6 +852,32 @@ function Add_To_Timers(ipAddress = null) {
                                         clearInterval(Timers_Blink[ipAddress]);
                                         delete Timers_Blink[ipAddress];
                                     }
+                                    setTimeout(() => {
+                                        
+                                        dashboard_ip.classList.remove('lightblue');
+                                        dashboard_ip.classList.remove('lightgreen');
+                                        dashboard_ip.classList.remove('lightred');
+
+                                        tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
+                                        tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightgreen');
+                                        tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightred');
+
+                                        tabs_list.getElementsByTagName("li")[TestCurrent[ipAddress]].innerHTML = response.Value;
+
+                                        if ((response.Value.indexOf("error") == -1) && (response.Value.indexOf("Error") == -1) && (response.Value.indexOf("ERROR") == -1)) {
+                                            tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightgreen');
+                                            dashboard_ip.classList.add('lightgreen');
+                                            TestCurrent[ipAddress]++;
+                                        }
+                                        else {
+                                            tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.add('lightred');
+                                            dashboard_ip.classList.add('lightred');
+                                            Commands[ipAddress] = 'Pause';
+                                        }
+                                        
+                                    }, 300);
+
+                                    /*
                                     tabs_list.getElementsByTagName("li")[TestCurrent[ipAddress]].innerHTML = response.Value;
                                     if (tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.contains('lightblue')) {
                                         tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.remove('lightblue');
@@ -836,6 +897,7 @@ function Add_To_Timers(ipAddress = null) {
                                         dashboard_ip.classList.add('lightred');
                                         Commands[ipAddress] = 'Pause';
                                     }
+                                    */
                                 }
                             });
                         }
@@ -927,7 +989,7 @@ function clearAllCookies() {
 
 // Function check serial
 function Control_OnClick_Check_Serial(Serial = null) {
-    Execute("", 'CheckSerial', Serial).then(function (response) {
+    Execute("", 'CheckSerial', Serial, 10000).then(function (response) {
         var report = response.Value.replaceAll(";", "\r\n");
         alert("Report:\r\n" + report);
     }).catch(function (response) {
@@ -963,14 +1025,15 @@ function restoreTabsState() {
 }
 
 // Function to get and set data of device by the IP address
-function Execute(ipAddress, Command, Value) {
-    return new Promise(function (resolve, reject) {
+function Execute(ipAddress, Command, Value, TimeOut) {
+    return new Promise(async function (resolve, reject) {
         var StructData = {
             IP: ipAddress,
             Serial: Serials[ipAddress],
             Command: Command,
             Value: Value,
-            Online: false
+            Online: false,
+            TimeOut: TimeOut
         };
 
         $.ajax({

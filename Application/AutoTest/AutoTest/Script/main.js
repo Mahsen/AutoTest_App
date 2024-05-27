@@ -75,7 +75,7 @@ function addNew(ipAddress = null) {
 
     // Close the modal if an IP address was provided
     if (ipAddress !== null && document.getElementById('ipInput').value) {
-        Execute(ipAddress, 'AddTester', ipAddress, 5000).catch(function (response) {
+        Execute(ipAddress, 'AddTester', ipAddress, 10000).catch(function (response) {
             alert("Add Tester Failed");
         });
         closeModal();
@@ -107,7 +107,7 @@ function Control_OnClick_Stop(ipAddress = null) {
     if (Timers_Blink[ipAddress]) {
         clearInterval(Timers_Blink[ipAddress]);
     }
-    Execute(ipAddress, 'Stop', '', 5000).then(function (response) {
+    Execute(ipAddress, 'Stop', '', 10000).then(function (response) {
         var tabs_list = TabsBody[ipAddress].querySelector('#list');
         tabs_list.innerHTML = "";
         Commands[ipAddress] = 'Stop';
@@ -135,7 +135,7 @@ function Control_OnClick_Play(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    Execute(ipAddress, 'Play', '', 5000).then(function (response) {
+    Execute(ipAddress, 'Play', '', 10000).then(function (response) {
         Commands[ipAddress] = 'Play';
     });
 }
@@ -153,7 +153,7 @@ function Control_OnClick_Next(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     } 
-    Execute(ipAddress, 'Play', '', 5000).then(function (response) {
+    Execute(ipAddress, 'Play', '', 10000).then(function (response) {
         TestCurrent[ipAddress]++;
         Commands[ipAddress] = 'Play';
     });
@@ -221,14 +221,14 @@ function Control_OnClick_Save(ipAddress = null) {
         alert('Please select serial of list serials on right side !');
         return;
     }
-    Execute(ipAddress, 'SaveReport', Reports[ipAddress], 5000).catch(function (response) {
+    Execute(ipAddress, 'SaveReport', Reports[ipAddress], 10000).catch(function (response) {
         alert("Save report Failed : " + response);
     });   
 }
 
 // Function On Click Delete device
 function Control_OnClick_Delete_Device(ipAddress = null) {
-    Execute(ipAddress, 'RemoveTester', ipAddress, 5000).then(function (response) {
+    Execute(ipAddress, 'RemoveTester', ipAddress, 10000).then(function (response) {
         if (response.Value.indexOf("ERROR") != -1) {
             alert("Remove Tester Failed : " + response.Value);
         }
@@ -652,7 +652,7 @@ function Handle_Timers_Fault(ipAddress = null) {
     if (tabs_status.classList.contains('lightblue')) {
         tabs_status.classList.remove('lightblue');
     }
-    setTimeout(() => { Add_To_Timers(ipAddress); }, 5000);
+    setTimeout(() => { Add_To_Timers(ipAddress); }, 10000);
     return true;
 
     /*
@@ -700,11 +700,11 @@ function Add_To_Timers(ipAddress = null) {
             dashboard_serial.style.color = tabs_serial.style.color = "red";
         }
 
-        Execute(ipAddress, 'Link', '', 5000).then(function (response) {
+        Execute(ipAddress, 'Link', '', 10000).then(function (response) {
             if (response.Online) {
                 document.getElementsByTagName("p")
                 if (tabs_list.innerHTML == "") {
-                    Execute(ipAddress, 'List', '', 5000).then(function (response) {
+                    Execute(ipAddress, 'List', '', 10000).then(function (response) {
                         if (tabs_list.innerHTML == "") {
                             TestList[ipAddress] = response.Value.split(',');
                             TestList[ipAddress].length--;
@@ -989,7 +989,7 @@ function clearAllCookies() {
 
 // Function check serial
 function Control_OnClick_Check_Serial(Serial = null) {
-    Execute("", 'CheckSerial', Serial, 5000).then(function (response) {
+    Execute("", 'CheckSerial', Serial, 10000).then(function (response) {
         var report = response.Value.replaceAll(";", "\r\n");
         alert("Report:\r\n" + report);
     }).catch(function (response) {
