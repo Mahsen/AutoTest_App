@@ -252,7 +252,12 @@ function Add_Control_To(ipAddress, obj) {
     playIcon.setAttribute('cursor', 'pointer');
     playIcon.classList.add('fas', 'fa-play');
     obj.appendChild(playIcon);
-    playIcon.addEventListener('click', function () { Control_OnClick_Play(ipAddress); });
+    playIcon.addEventListener('click', function () {
+        this.style.color = 'red';
+        this.classList.add('disabled-link');
+        setTimeout(() => { this.style.color = '#401040'; this.classList.remove('disabled-link'); }, 5000);
+        Control_OnClick_Play(ipAddress);
+    });
 
     // Stop icon
     var stopIcon = document.createElement('a');
@@ -262,7 +267,12 @@ function Add_Control_To(ipAddress, obj) {
     stopIcon.setAttribute('title', 'Stop');
     stopIcon.classList.add('fas', 'fa-stop');
     obj.appendChild(stopIcon);
-    stopIcon.addEventListener('click', function () { Control_OnClick_Stop(ipAddress); });
+    stopIcon.addEventListener('click', function () {
+        this.style.color = 'red';
+        this.classList.add('disabled-link');
+        setTimeout(() => { this.style.color = '#401040'; this.classList.remove('disabled-link'); }, 5000);
+        Control_OnClick_Stop(ipAddress);
+    });
 
     if (ipAddress.indexOf(":") != -1) {
         // Next icon
@@ -273,7 +283,12 @@ function Add_Control_To(ipAddress, obj) {
         nextIcon.setAttribute('title', 'Next');
         nextIcon.classList.add('fas', 'fa-forward');
         obj.appendChild(nextIcon);
-        nextIcon.addEventListener('click', function () { Control_OnClick_Next(ipAddress); });
+        nextIcon.addEventListener('click', function () {
+            this.style.color = 'red';
+            this.classList.add('disabled-link');
+            setTimeout(() => { this.style.color = '#401040'; this.classList.remove('disabled-link'); }, 5000);
+            Control_OnClick_Next(ipAddress);
+        });
     }
 
     // Print icon
@@ -284,7 +299,12 @@ function Add_Control_To(ipAddress, obj) {
     printIcon.setAttribute('title', 'Print');
     printIcon.classList.add('fas', 'fa-print');
     obj.appendChild(printIcon);
-    printIcon.addEventListener('click', function () { Control_OnClick_Print(ipAddress); });
+    printIcon.addEventListener('click', function () {
+        this.style.color = 'red';
+        this.classList.add('disabled-link');
+        setTimeout(() => { this.style.color = '#401040'; this.classList.remove('disabled-link'); }, 5000);
+        Control_OnClick_Print(ipAddress);
+    });
 
     // Save icon
     var saveIcon = document.createElement('a');
@@ -294,7 +314,12 @@ function Add_Control_To(ipAddress, obj) {
     saveIcon.setAttribute('title', 'Save');
     saveIcon.classList.add('fas', 'fa-save');
     obj.appendChild(saveIcon);
-    saveIcon.addEventListener('click', function () { Control_OnClick_Save(ipAddress); });
+    saveIcon.addEventListener('click', function () {
+        this.style.color = 'red';
+        this.classList.add('disabled-link');
+        setTimeout(() => { this.style.color = '#401040'; this.classList.remove('disabled-link'); }, 5000);
+        Control_OnClick_Save(ipAddress);
+    });
 
 }
 
@@ -840,6 +865,7 @@ function Add_To_Timers(ipAddress = null) {
                             if (!Timers_Blink[ipAddress]) {
                                 Timers_Blink[ipAddress] = setInterval(() => {
                                     tabs_list.getElementsByTagName("div")[TestCurrent[ipAddress]].classList.toggle('lightblue');
+                                    tabs_status.classList.toggle('lightblue');
                                     //dashboard_ip.classList.toggle('lightblue');
                                 }, 200);
                             }
@@ -904,8 +930,7 @@ function Add_To_Timers(ipAddress = null) {
                         else {
                             TestCurrent[ipAddress]++;
                         }
-                    }
-                    tabs_status.classList.toggle('lightblue');
+                    }                    
                     break;
                 }
                 case 'Pause': {
@@ -1089,3 +1114,18 @@ window.addEventListener('load', function () {
     // Add event listener to any element (button, icon, etc.) to toggle the panel visibility
     document.getElementById('toggle-panel-button').addEventListener('click', togglePanel);
 });
+
+window.onkeydown = evt => {
+    switch (evt.keyCode) {
+        case 113:
+            for (var Index = 0; Index <= IPs.length; Index++) {
+                Control_OnClick_Play(IPs[Index]);
+            }
+            break;
+        //Fallback to default browser behaviour
+        default:
+            return true;
+    }
+    //Returning false overrides default browser event
+    return false;
+};
