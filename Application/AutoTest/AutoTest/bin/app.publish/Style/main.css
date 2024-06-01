@@ -11,6 +11,15 @@ i {
     cursor: pointer;
 }
 
+a:hover {
+    cursor: pointer;
+}
+
+.disabled-link {
+    cursor: default;
+    pointer-events: none;
+}
+
 .invalid {
     border: 1px solid red;
 }
@@ -161,7 +170,7 @@ h1 {
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    padding: 10px;
+    padding: 5px;
 }
 
 .progress-container label {
@@ -176,7 +185,7 @@ h1 {
 }
 
 .progress {
-    height: 20px;
+    height: 10px;
     text-align: right;
     font-size: 15px;
     border-radius: 15px;
@@ -193,7 +202,7 @@ h1 {
     padding: 1px;
     font-weight: bold;
     border-radius: 10px;
-    width:200px;
+    width:230px;
     text-align: center;
     margin: 0 auto;
     cursor: pointer;

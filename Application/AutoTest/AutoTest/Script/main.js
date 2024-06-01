@@ -26,10 +26,13 @@ var Serials = {};
 var Onlines = {};
 // Object to Reports
 var Reports = {};
+// Object to TimeOuts
+var TimeOuts = {};
 // IP Focus
 var FocusIP = "";
 // TryError
 var TryError = 0;
+
 
 // Function to open the modal
 function openModal() {
@@ -89,7 +92,9 @@ function addNew(ipAddress = null) {
 function Control_OnClick_Stop(ipAddress = null) {  
     if (ipAddress.indexOf(":") == -1) {
         for (var Index = 1001; Index <= 1004; Index++) {
-            Control_OnClick_Stop(ipAddress + ":" + Index);
+            if (Onlines[ipAddress + ":" + Index]) {
+                Control_OnClick_Stop(ipAddress + ":" + Index);
+            }
         }
         return;
     }
@@ -120,7 +125,9 @@ function Control_OnClick_Stop(ipAddress = null) {
 function Control_OnClick_Play(ipAddress = null) {
     if (ipAddress.indexOf(":") == -1) {
         for (var Index = 1001; Index <= 1004; Index++) {
-            Control_OnClick_Play(ipAddress + ":" + Index);
+            if (Onlines[ipAddress + ":" + Index]) {
+                Control_OnClick_Play(ipAddress + ":" + Index);
+            }
         }
         return;
     }
@@ -416,6 +423,8 @@ function Add_To_Tab(ipAddress = null) {
         showPage(ipAddress); // Show the page corresponding to the IP address
     });
 
+    TimeOuts[ipAddress] = 0;
+
     console.log('Add_To_Tab(' + ipAddress + ')');
 }
 
@@ -662,23 +671,28 @@ function Handle_Timers_Fault(ipAddress = null) {
     setTimeout(() => { Add_To_Timers(ipAddress); }, 2000);
     */
 
-    
-    var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
-    var tabs_state = TabsBody[ipAddress].querySelector('#state');
-    dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
-    dashboard_state.style.color = tabs_state.style.color = "red";
-    Commands[ipAddress] = 'Pause'
-    var tabs_task = TabsBody[ipAddress].querySelector('#task');
-    var dashboard_task = ProgressOfDashboard[ipAddress].querySelector('#task');
-    tabs_task.textContent = dashboard_task.textContent = 'Task : Pause';
-    var tabs_list = TabsBody[ipAddress].querySelector('#list');
-    tabs_list.innerHTML = "";
-    var tabs_status = Tabs[ipAddress].querySelector('#status');
-    if (tabs_status.classList.contains('lightblue')) {
-        tabs_status.classList.remove('lightblue');
+    if (TimeOuts[ipAddress] > 0) {
+        TimeOuts[ipAddress]--;
+        return false;
     }
-    setTimeout(() => { Add_To_Timers(ipAddress); }, 10000);
-    return true;
+    else {
+        var dashboard_state = ProgressOfDashboard[ipAddress].querySelector('#state');
+        var tabs_state = TabsBody[ipAddress].querySelector('#state');
+        dashboard_state.textContent = tabs_state.textContent = 'State : Offline';
+        dashboard_state.style.color = tabs_state.style.color = "red";
+        Commands[ipAddress] = 'Pause'
+        var tabs_task = TabsBody[ipAddress].querySelector('#task');
+        var dashboard_task = ProgressOfDashboard[ipAddress].querySelector('#task');
+        tabs_task.textContent = dashboard_task.textContent = 'Task : Pause';
+        var tabs_list = TabsBody[ipAddress].querySelector('#list');
+        tabs_list.innerHTML = "";
+        var tabs_status = Tabs[ipAddress].querySelector('#status');
+        if (tabs_status.classList.contains('lightblue')) {
+            tabs_status.classList.remove('lightblue');
+        }
+        setTimeout(() => { Add_To_Timers(ipAddress); }, 10000);
+        return true;
+    }
 
     /*
     TryError++;
@@ -869,6 +883,12 @@ function Add_To_Timers(ipAddress = null) {
                                     //dashboard_ip.classList.toggle('lightblue');
                                 }, 200);
                             }
+                            //if (Command.indexOf("ProgramSWD") != -1) {
+                                TimeOuts[ipAddress] = 60;
+                            //}
+                            //else {
+                            //    TimeOuts[ipAddress] = 0;
+                            //}
                             Execute(ipAddress, Command, Value, 120000).then(function (response) {
                                 if ((response.Value == "[ERR:0]") || (response.Value == null) || (response.Online==false)) {
 
@@ -1119,7 +1139,9 @@ window.onkeydown = evt => {
     switch (evt.keyCode) {
         case 113:
             for (var Index = 0; Index <= IPs.length; Index++) {
-                Control_OnClick_Play(IPs[Index]);
+                if (Onlines[IPs[Index]]) {
+                    Control_OnClick_Play(IPs[Index]);
+                }
             }
             break;
         //Fallback to default browser behaviour

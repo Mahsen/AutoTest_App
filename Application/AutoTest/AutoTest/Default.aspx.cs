@@ -99,6 +99,8 @@ namespace AutoTest
                     {
                         outputdata.Value = message.Substring((message.IndexOf(">")+1), (message.IndexOf("</")-(message.IndexOf(">") + 1)));
                         outputdata.Online = true;
+                        inputdata.Command = "";
+                        inputdata.Value = "";
                     }
 
                     stream.Dispose();
