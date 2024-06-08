@@ -21,7 +21,7 @@ namespace AutoTest
 {
     public partial class Default : System.Web.UI.Page
     {
-        //static AutoTestDataContext DataContext;
+
         static AutoTestEntities3 DataContext;
 
         public class StructData
