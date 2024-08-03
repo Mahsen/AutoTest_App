@@ -16,6 +16,9 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web.Services.Description;
+using Newtonsoft.Json;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
 namespace AutoTest
 {
@@ -23,6 +26,12 @@ namespace AutoTest
     {
 
         static AutoTestEntities3 DataContext;
+
+        public class PacketTester
+        {
+            public string Command { get; set; }
+            public string Data { get; set; }
+        }
 
         public class StructData
         {
@@ -83,10 +92,17 @@ namespace AutoTest
                     // Perform operations with the TcpClient
                     NetworkStream stream = client.GetStream();
 
-                    byte[] messageBytes = Encoding.ASCII.GetBytes("<AUTOTEST:" + inputdata.Command + ">" + inputdata.Value+ "</AUTOTEST>\r\n");
+                    PacketTester Tester_Packet = new PacketTester()
+                    {
+                        Command = inputdata.Command,
+                        Data = inputdata.Value
+                    };
+                    var customerJson = JsonConvert.SerializeObject(Tester_Packet);
+
+                    byte[] messageBytes = Encoding.ASCII.GetBytes(customerJson);
                     stream.Write(messageBytes, 0, messageBytes.Length); // Write the bytes  
 
-                    for(int TimeOut=0; ((TimeOut<(inputdata.TimeOut/1000)) && (!stream.DataAvailable)); TimeOut++)
+                    for (int TimeOut = 0; ((TimeOut < (inputdata.TimeOut / 1000)) && (!stream.DataAvailable)); TimeOut++)
                     {
                         Thread.Sleep(1000);
                     }
@@ -95,14 +111,13 @@ namespace AutoTest
                     stream.Read(messageBytes, 0, messageBytes.Length);
                     string message = Encoding.UTF8.GetString(messageBytes);
                     outputdata.Value = "";
-                    if ((message.IndexOf(">") != -1) && (message.IndexOf("</")!=-1))
-                    {
-                        outputdata.Value = message.Substring((message.IndexOf(">")+1), (message.IndexOf("</")-(message.IndexOf(">") + 1)));
+                    if (message.Length!=0) {
+                        //PacketTester deptObj = JsonSerializer.Deserialize<PacketTester>(message);
+                        JObject Tester_Packet_Respond = JObject.Parse(message);
                         outputdata.Online = true;
-                        inputdata.Command = "";
-                        inputdata.Value = "";
+                        outputdata.Value = (string)Tester_Packet_Respond["Data"];
+                        outputdata.Command = (string)Tester_Packet_Respond["Command"];
                     }
-
                     stream.Dispose();
 
                     // Close the connection

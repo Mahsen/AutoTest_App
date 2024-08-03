@@ -174,3 +174,5 @@ H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\Au
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.csproj.CopyComplete
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.dll
 H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\obj\Debug\AutoTest.pdb
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Newtonsoft.Json.dll
+H:\Project\New_Structure\AutoTest_App\Application\AutoTest\AutoTest\bin\Newtonsoft.Json.xml
