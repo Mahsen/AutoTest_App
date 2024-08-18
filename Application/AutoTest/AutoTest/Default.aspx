@@ -162,6 +162,6 @@
         });
     }
 </script>
-<div class="footer" style="background-color: #333; color: #fff;"> v1.14030513</div>
+<div class="footer" style="background-color: #333; color: #fff;"> v1.20240818</div>
 </body>
 </html>

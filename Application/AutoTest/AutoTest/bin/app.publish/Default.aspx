@@ -106,7 +106,7 @@
     <!--<div id="printable_div_id_ERR_Value" style="font-size: 8px; margin-top:-8px; text-align: center;">Err:0</div>-->
 </div>
 
-<script type="text/javascript" src="Script/main.js?t=47"></script>
+<script type="text/javascript" src="Script/main.js?t=48"></script>
 
 <script type="text/javascript">
     <%
@@ -162,6 +162,6 @@
         });
     }
 </script>
-<div class="footer" style="background-color: #333; color: #fff;"> v1.14030305</div>
+<div class="footer" style="background-color: #333; color: #fff;"> v1.20240818</div>
 </body>
 </html>
